@@ -4,9 +4,9 @@ A full-stack client-project management application being built for the KODA Koll
 
 ## Current status
 
-Phase 1 — Django Backend Foundation is complete and verified. The backend connects to PostgreSQL, uses Django REST Framework, and permits requests from the planned local Vite frontend origin.
+Phases 1–2 — Django Backend Foundation and Project Data Model are complete and verified. The backend connects to PostgreSQL, uses Django REST Framework, permits requests from the planned local Vite frontend origin, and persists Project records.
 
-The Project data model, migrations, REST CRUD endpoints, React frontend, and automated application tests are planned for subsequent phases. They are not implemented yet.
+REST CRUD endpoints, the React frontend, and automated application tests are planned for subsequent phases. They are not implemented yet.
 
 ## Planned features
 
@@ -48,7 +48,7 @@ The backend follows Django's conventional application structure. As the project 
 ClientProjectTracker/
 ├── backend/
 │   ├── config/                 # Django configuration
-│   ├── projects/               # Project-domain app (model/API added in later phases)
+│   ├── projects/               # Project model, migration, and future API code
 │   ├── manage.py
 │   └── requirements.txt
 ├── .env.example                # Safe environment-variable template
@@ -148,7 +148,7 @@ The backend will be the authoritative validation layer. Planned rules include:
 
 ## Verification completed
 
-The following Phase 1 checks have passed locally:
+The following Phase 1–2 checks have passed locally:
 
 ```text
 Django system check
@@ -157,9 +157,11 @@ Direct PostgreSQL query (SELECT 1)
 Django REST Framework configuration
 CORS configuration for http://localhost:5173
 Python dependency integrity check
+Project migration applied
+Project created and retrieved through the Django ORM
 ```
 
-No application migrations are present yet; they will be created with the Project model in Phase 2.
+The initial `projects.0001_initial` migration has been applied. Project API routes and serializer validation will be added in later phases.
 
 ## Security and configuration
 
@@ -180,9 +182,8 @@ AI assistance is used to help scaffold, document, and verify implementation work
 
 ## Known limitations
 
-At the current foundation stage:
+At the current backend stage:
 
-- There is no Project model or database migration.
 - There are no project API endpoints.
 - There is no React frontend.
 - There is no seed command or automated application test suite.

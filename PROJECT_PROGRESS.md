@@ -4,8 +4,8 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 1 — Django Backend Foundation  
-**Next phase:** Phase 2 — Project Data Model
+**Completed phase:** Phase 2 — Project Data Model
+**Next phase:** Phase 3 — Serializer and Backend Validation
 
 ## Phase status
 
@@ -13,7 +13,7 @@ This tracker records implementation progress against the [development blueprint]
 | --- | --- | --- |
 | 0. Project Preparation | Partially complete | Git repository and backend virtual environment now exist. Tool availability was checked during initial setup. |
 | 1. Django Backend Foundation | Complete | Django, DRF, PostgreSQL configuration, CORS, environment template, and dependency requirements are in place. Django checks, authenticated PostgreSQL connection, and a direct query passed. |
-| 2. Project Data Model | Not started | Add the `Project` model, choices, and migration. |
+| 2. Project Data Model | Complete | The `Project` model, status and priority choices, Django admin registration, and `projects.0001_initial` migration are implemented and applied. |
 | 3. Serializer and Backend Validation | Not started | Define API representation and business-rule validation. |
 | 4. Required REST CRUD API | Not started | Add project routes and CRUD endpoints. |
 | 5. Seed / Test Data | Not started | Add a repeatable seed command. |
@@ -30,9 +30,16 @@ This tracker records implementation progress against the [development blueprint]
 - CORS is restricted to `http://localhost:5173` for local development.
 - Installed Python dependencies passed integrity checking.
 
+## Phase 2 verification record
+
+- `makemigrations --check --dry-run` reported no missing migration changes.
+- `migrate` applied `projects.0001_initial` to PostgreSQL.
+- Django recorded the Project migration as applied.
+- A Project was created and retrieved through the Django ORM.
+- The temporary verification record was deleted; no verification records remain.
+
 ## Current limitations
 
-- No `Project` model or migration exists yet.
 - No project API endpoint exists yet.
 - No React frontend exists yet.
 
