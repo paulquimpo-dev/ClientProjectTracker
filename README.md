@@ -4,7 +4,7 @@ A full-stack client-project management application being built for the KODA Koll
 
 ## Current status
 
-Phases 1–2 — Django Backend Foundation and Project Data Model are complete and verified. The backend connects to PostgreSQL, uses Django REST Framework, permits requests from the planned local Vite frontend origin, and persists Project records.
+Phases 1–3 — Django Backend Foundation, Project Data Model, and Serializer Validation are complete and verified. The backend connects to PostgreSQL, uses Django REST Framework, permits requests from the planned local Vite frontend origin, persists Project records, and validates API data.
 
 REST CRUD endpoints, the React frontend, and automated application tests are planned for subsequent phases. They are not implemented yet.
 
@@ -48,7 +48,7 @@ The backend follows Django's conventional application structure. As the project 
 ClientProjectTracker/
 ├── backend/
 │   ├── config/                 # Django configuration
-│   ├── projects/               # Project model, migration, and future API code
+│   ├── projects/               # Project model, serializer validation, and future API code
 │   ├── manage.py
 │   └── requirements.txt
 ├── .env.example                # Safe environment-variable template
@@ -134,11 +134,13 @@ The CRUD API is not available yet. The planned endpoints are:
 | `PUT` | `/api/projects/{id}/` | Update a project |
 | `DELETE` | `/api/projects/{id}/` | Delete a project |
 
-These routes will be introduced only after the Project model and serializer are implemented.
+These routes will be introduced in Phase 4. The Project model and serializer validation are already implemented.
+
+The API format uses camelCase field names—for example, `clientName`, `projectName`, `startDate`, and `dueDate`. The serializer maps these consistently to Django's internal snake_case model fields.
 
 ## Planned validation rules
 
-The backend will be the authoritative validation layer. Planned rules include:
+The backend is the authoritative validation layer. It currently enforces:
 
 - Client name and project name are required and cannot be whitespace-only.
 - Status must be one of `Planning`, `In Progress`, `On Hold`, or `Completed`.
@@ -159,9 +161,10 @@ CORS configuration for http://localhost:5173
 Python dependency integrity check
 Project migration applied
 Project created and retrieved through the Django ORM
+Serializer validation for valid and invalid project payloads
 ```
 
-The initial `projects.0001_initial` migration has been applied. Project API routes and serializer validation will be added in later phases.
+The initial `projects.0001_initial` migration has been applied. Project API routes will be added in Phase 4.
 
 ## Security and configuration
 
