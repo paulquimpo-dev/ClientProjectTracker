@@ -4,7 +4,7 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-13 are complete:
+Phases 1-14 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
@@ -18,8 +18,9 @@ Phases 1-13 are complete:
 - Project creation form with frontend and backend validation feedback
 - Project editing and confirmed deletion with persisted API updates
 - Friendly frontend validation, loading, and failure handling across CRUD flows
+- Required full-stack core application completion checkpoint
 
-The core-completion review and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+Core regression testing and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
@@ -81,5 +82,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- Required frontend CRUD and error handling are implemented; frontend automated tests are planned for a later phase.
+- The required full-stack core is complete; frontend automated tests are planned for a later phase.
 - The backend test suite and seed data are implemented; frontend tests are planned for a later phase.

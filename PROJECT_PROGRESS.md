@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 13 - Frontend Validation and Error Handling
+**Completed phase:** Phase 14 - Core Assessment Complete
 
-**Next phase:** Phase 14 - Core Assessment Complete
+**Next phase:** Phase 15 - Core Regression Testing
 
 ## Phase status
 
@@ -26,7 +26,8 @@ This tracker records implementation progress against the [development blueprint]
 | 11. Edit Project | Complete | The reusable ProjectForm prepopulates project values, sends updates through the API, and updates the visible list after persistence succeeds. |
 | 12. Delete Project | Complete | Delete requires an explicit confirmation, persists through the API, removes the project from the visible list, and reports failures clearly. |
 | 13. Frontend Validation and Error Handling | Complete | Field validation, focus management, friendly save/delete/API errors, and failure-state regression checks are implemented. |
-| 14-17. Frontend and Core Completion | Not started | Core completion review, regression testing, documentation, and repository review. |
+| 14. Core Assessment Complete | Complete | The React/Django/PostgreSQL application delivers required end-to-end CRUD, validation, error states, and maintainable frontend/backend structure. |
+| 15-17. Frontend and Core Completion | Not started | Core regression testing, documentation, and repository review. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -139,9 +140,19 @@ This tracker records implementation progress against the [development blueprint]
 - Backend regression suite passed all 14 tests; live invalid-form and missing-project checks returned `400` and `404` respectively.
 - Frontend linting and production build passed.
 
+### Phase 14
+
+- React frontend, Django REST backend, and PostgreSQL persistence are working together end to end.
+- Project listing, creation, editing, and confirmed deletion are implemented through the shared API service layer.
+- Frontend and backend validation, loading state, empty state, friendly error handling, and field feedback are present.
+- All 14 backend tests passed using an isolated PostgreSQL test database.
+- Django database checks, migration consistency, dependency integrity, and seed repeatability passed.
+- Frontend linting and the TypeScript/Vite production build passed.
+- The live projects endpoint returned `200` with seeded project data.
+
 ## Current limitations
 
-- Required frontend CRUD, validation, and user-facing error handling are implemented. Phase 14 is the core-completion checkpoint.
+- The required core application is complete. Phase 15 will perform a dedicated regression review before further documentation and repository-quality work.
 
 ## Update convention
 
