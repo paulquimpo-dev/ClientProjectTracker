@@ -37,7 +37,7 @@ Expected: `200 OK` and a JSON array. An empty database returns `[]`.
 
 ```powershell
 @'
-{"clientName":"Acme Corporation","projectName":"Website Redesign","description":"Refresh the public website.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
+{"clientName":"Mabuhay Digital Solutions","projectName":"Customer Support Portal","description":"Build a customer support portal for service requests and status tracking.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
 '@ | curl.exe -i -X POST http://127.0.0.1:8000/api/projects/ -H "Content-Type: application/json" --data-binary "@-"
 ```
 
@@ -55,7 +55,7 @@ Expected: `200 OK` and the created project.
 
 ```powershell
 @'
-{"clientName":" ","projectName":"Invalid Project","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
+{"clientName":" ","projectName":"Invalid Support Portal","description":"This temporary record should be rejected.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
 '@ | curl.exe -i -X POST http://127.0.0.1:8000/api/projects/ -H "Content-Type: application/json" --data-binary "@-"
 ```
 
@@ -65,7 +65,7 @@ To test the date rule independently, use a valid client name:
 
 ```powershell
 @'
-{"clientName":"Acme Corporation","projectName":"Invalid Dates","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
+{"clientName":"Mabuhay Digital Solutions","projectName":"Invalid Portal Schedule","description":"This temporary record has an invalid date range.","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
 '@ | curl.exe -i -X POST http://127.0.0.1:8000/api/projects/ -H "Content-Type: application/json" --data-binary "@-"
 ```
 
@@ -75,7 +75,7 @@ Expected: `400 Bad Request` with a `dueDate` validation error.
 
 ```powershell
 @'
-{"clientName":"Acme Corporation","projectName":"Updated Website Redesign","description":"Updated scope.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
+{"clientName":"Mabuhay Digital Solutions","projectName":"Updated Customer Support Portal","description":"Expand the portal scope to include service requests and status notifications.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
 '@ | curl.exe -i -X PUT http://127.0.0.1:8000/api/projects/1/ -H "Content-Type: application/json" --data-binary "@-"
 ```
 
@@ -99,7 +99,131 @@ Expected: `204 No Content`. Retrieving the same ID afterward should return `404 
 
 ## Postman tests
 
-For each request, select the method, enter the URL, and click **Send**. For `POST` and `PUT`, select **Body > raw > JSON** and use the JSON payloads from the curl examples.
+Use this base URL:
+
+```text
+http://127.0.0.1:8000/api/projects/
+```
+
+For requests with a body, select **Body > raw > JSON**. Postman should automatically set `Content-Type: application/json`.
+
+### 1. List projects
+
+- Method: `GET`
+- URL: `http://127.0.0.1:8000/api/projects/`
+- Body: none
+- Expected: `200 OK` and a JSON array
+
+### 2. Create a valid project
+
+- Method: `POST`
+- URL: `http://127.0.0.1:8000/api/projects/`
+- Body:
+
+```json
+{
+  "clientName": "Mabuhay Digital Solutions",
+  "projectName": "Customer Support Portal",
+  "description": "Build a customer support portal for service requests and status tracking.",
+  "status": "Planning",
+  "priority": "High",
+  "startDate": "2026-08-20",
+  "dueDate": "2026-10-15"
+}
+```
+
+Expected: `201 Created`. Save the returned numeric `id` and use it instead of `{id}` in the retrieve, update, and delete requests.
+
+### 3. Retrieve the created project
+
+- Method: `GET`
+- URL: `http://127.0.0.1:8000/api/projects/{id}/`
+- Body: none
+- Expected: `200 OK`
+
+For example, if creation returned `"id": 12`, use:
+
+```text
+http://127.0.0.1:8000/api/projects/12/
+```
+
+### 4. Reject a blank client name
+
+- Method: `POST`
+- URL: `http://127.0.0.1:8000/api/projects/`
+- Body:
+
+```json
+{
+  "clientName": " ",
+  "projectName": "Invalid Support Portal",
+  "description": "This temporary record should be rejected.",
+  "status": "Planning",
+  "priority": "High",
+  "startDate": "2026-08-20",
+  "dueDate": "2026-10-15"
+}
+```
+
+Expected: `400 Bad Request` with a `clientName` error.
+
+### 5. Reject an invalid date range
+
+- Method: `POST`
+- URL: `http://127.0.0.1:8000/api/projects/`
+- Body:
+
+```json
+{
+  "clientName": "Mabuhay Digital Solutions",
+  "projectName": "Invalid Portal Schedule",
+  "description": "This temporary record has an invalid date range.",
+  "status": "Planning",
+  "priority": "High",
+  "startDate": "2026-10-15",
+  "dueDate": "2026-08-20"
+}
+```
+
+Expected: `400 Bad Request` with a `dueDate` error.
+
+### 6. Update the created project
+
+- Method: `PUT`
+- URL: `http://127.0.0.1:8000/api/projects/{id}/`
+- Body:
+
+```json
+{
+  "clientName": "Mabuhay Digital Solutions",
+  "projectName": "Updated Customer Support Portal",
+  "description": "Expand the portal scope to include service requests and status notifications.",
+  "status": "In Progress",
+  "priority": "Medium",
+  "startDate": "2026-08-20",
+  "dueDate": "2026-10-15"
+}
+```
+
+Expected: `200 OK` with the updated project. Send another `GET` request for the same ID to confirm that the changes persisted.
+
+### 7. Retrieve a missing project
+
+- Method: `GET`
+- URL: `http://127.0.0.1:8000/api/projects/999999/`
+- Body: none
+- Expected: `404 Not Found`
+
+### 8. Delete the created project
+
+- Method: `DELETE`
+- URL: `http://127.0.0.1:8000/api/projects/{id}/`
+- Body: none
+- Expected: `204 No Content`
+
+Send a `GET` request for the deleted ID afterward. It should return `404 Not Found`.
+
+### Postman summary
 
 | Test | Method | URL | Expected status |
 | --- | --- | --- | --- |
@@ -111,4 +235,4 @@ For each request, select the method, enter the URL, and click **Send**. For `POS
 | Retrieve missing | `GET` | `/api/projects/999999/` | `404` |
 | Delete | `DELETE` | `/api/projects/{id}/` | `204` |
 
-Postman usually sets `Content-Type: application/json` automatically when **JSON** is selected. Confirm that updates appear in a later `GET` response and deletions produce a later `404`.
+Do not type `{id}` literally. Replace it with the numeric ID returned by the valid create request.
