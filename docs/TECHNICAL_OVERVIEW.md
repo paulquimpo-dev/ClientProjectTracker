@@ -109,5 +109,3 @@ All AI-assisted output is reviewed by the developer before acceptance. Implement
 ## Related documents
 
 - [DevOps Guide](DEVOPS_GUIDE.md)
-- [Technical Reflection](TECHNICAL_REFLECTION.md)
-- [UI/UX Design Guide](UI_UX_DESIGN_GUIDE.md)

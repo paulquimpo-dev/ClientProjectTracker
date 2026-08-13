@@ -113,6 +113,14 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 - Sign in and sign out with Django session authentication
 - Load repeatable demonstration data with `python manage.py seed_projects`
 
+## Assumptions
+
+- The application is used by authenticated project managers; role-based permissions and user-specific project ownership are outside this assessment's scope.
+- The project list is a small working dataset, so search, filtering, and sorting run in the frontend. Server-side pagination and filtering can be added when the dataset grows.
+- Description is optional because the requirements do not mark it as required.
+- Django REST Framework uses canonical trailing-slash routes, such as `/projects/` and `/projects/{id}/`.
+- Local development uses the documented `127.0.0.1` frontend and backend addresses so session and CSRF cookies work consistently.
+
 ## API and validation
 
 | Method   | Endpoint          | Purpose            |
@@ -140,8 +148,6 @@ The API uses camelCase fields. Client and project names are required; status and
 - [DevOps Guide](docs/DEVOPS_GUIDE.md) — clone, configure, run, update, and troubleshoot the project
 - [API Testing Guide](docs/API_TESTING_GUIDE.md) — manually verify CRUD behavior with curl or Postman
 - [Technical Overview](docs/TECHNICAL_OVERVIEW.md) — architecture, structure, validation, and security
-- [Technical Reflection](docs/TECHNICAL_REFLECTION.md) — implementation rationale, tradeoffs, security, testing, and AI use
-- [UI/UX Design Guide](docs/UI_UX_DESIGN_GUIDE.md) — visual direction, accessibility, and UI principles
 
 ## Architecture
 
