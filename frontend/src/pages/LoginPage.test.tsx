@@ -21,3 +21,14 @@ test('submits credentials and enters the authenticated application state', async
 
   await vi.waitFor(() => expect(onSignedIn).toHaveBeenCalledWith({ id: 1, username: 'project-manager' }))
 })
+
+test('keeps the password hidden by default and lets the user reveal it', () => {
+  render(<LoginPage onSignedIn={vi.fn()} />)
+
+  const password = screen.getByLabelText('Password')
+  expect(password).toHaveAttribute('type', 'password')
+
+  fireEvent.click(screen.getByRole('button', { name: 'Show password' }))
+  expect(password).toHaveAttribute('type', 'text')
+  expect(screen.getByRole('button', { name: 'Hide password' })).toBeInTheDocument()
+})

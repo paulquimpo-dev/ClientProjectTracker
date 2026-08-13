@@ -7,11 +7,12 @@ import { ApiError, getSession, signOut } from './services/authService'
 import type { AuthenticatedUser } from './services/authService'
 
 type SessionState = 'checking' | 'signed-out' | 'signed-in'
+type SessionMessage = { text: string; tone: 'info' | 'error' }
 
 function App() {
   const [sessionState, setSessionState] = useState<SessionState>('checking')
   const [user, setUser] = useState<AuthenticatedUser | null>(null)
-  const [sessionMessage, setSessionMessage] = useState<string | null>(null)
+  const [sessionMessage, setSessionMessage] = useState<SessionMessage | null>(null)
 
   useEffect(() => {
     void getSession()
@@ -20,7 +21,7 @@ function App() {
         setSessionState(sessionUser ? 'signed-in' : 'signed-out')
       })
       .catch(() => {
-        setSessionMessage('Unable to check your session. Please try signing in again.')
+        setSessionMessage({ text: 'Unable to check your session. Please try signing in again.', tone: 'error' })
         setSessionState('signed-out')
       })
   }, [])
@@ -28,7 +29,7 @@ function App() {
   useEffect(() => {
     function handleAuthenticationRequired() {
       setUser(null)
-      setSessionMessage('Your session has ended. Please sign in again.')
+      setSessionMessage({ text: 'Your session has ended. Please sign in again.', tone: 'info' })
       setSessionState('signed-out')
     }
 
@@ -40,10 +41,10 @@ function App() {
     try {
       await signOut()
       setUser(null)
-      setSessionMessage('You have been signed out.')
+      setSessionMessage({ text: 'You have been signed out.', tone: 'info' })
       setSessionState('signed-out')
     } catch (error: unknown) {
-      setSessionMessage(error instanceof ApiError ? error.message : 'Unable to sign out. Please try again.')
+      setSessionMessage({ text: error instanceof ApiError ? error.message : 'Unable to sign out. Please try again.', tone: 'error' })
     }
   }
 

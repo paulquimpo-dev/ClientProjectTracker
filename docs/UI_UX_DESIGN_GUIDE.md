@@ -108,6 +108,7 @@ Use clear hierarchy:
 - On narrow screens, stack card content and keep actions comfortably tappable.
 - Use one primary action per screen. For the projects page, this will be **New Project**.
 - Open create, edit, and delete workflows in modal dialogs so a user can act on a project without losing their position in the list. Lock the page behind the dialog, support Escape and backdrop dismissal when no request is in progress, trap keyboard focus, and return focus to the initiating control when it closes.
+- Keep authentication screens deliberately calm: use a subtle brand-tinted background, a clearly elevated white panel, semantic session notices, and an accessible password visibility toggle that defaults to hidden.
 
 ## CRAP principles in the interface
 
