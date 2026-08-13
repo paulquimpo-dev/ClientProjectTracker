@@ -142,14 +142,16 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
   return (
     <main className="projects-page">
       <header className="page-header">
-        <div>
+        <div className="page-header__identity">
           <img className="brand-logo brand-logo--header" src="/branding/client-project-tracker-logo.png" alt="Client Project Tracker" />
           <h1>Projects</h1>
           <p className="page-header__summary">Manage client projects and delivery timelines.</p>
         </div>
         <div className="page-header__actions">
-          <p className="signed-in-user">Signed in as <strong>{user.username}</strong></p>
-          <button type="button" className="button button--secondary" onClick={onSignOut}>Sign out</button>
+          <div className="page-header__account">
+            <p className="signed-in-user">Signed in as <strong>{user.username}</strong></p>
+            <button type="button" className="button button--secondary" onClick={onSignOut}>Sign out</button>
+          </div>
           <button
             type="button"
             className="button button--primary"
