@@ -1593,7 +1593,7 @@ Authenticated React requests include the cookie
 Protected /projects/ API permits or denies access
 ```
 
-There is no public registration flow. An administrator creates users with `python manage.py createsuperuser`.
+There is no public registration flow. An administrator provisions regular project-manager users; `python manage.py createsuperuser` is optional and is only needed to access Django Admin.
 
 ## Tasks
 

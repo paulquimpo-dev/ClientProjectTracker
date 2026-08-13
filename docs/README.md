@@ -5,7 +5,7 @@ This directory contains the extended documentation for the Client Project Tracke
 ## Guides
 
 - [DevOps Guide](DEVOPS_GUIDE.md) - environment setup, PostgreSQL provisioning, backend operation, repository updates, and troubleshooting
-- [API Testing Guide](API_TESTING_GUIDE.md) - manual CRUD and validation checks with curl or Postman
+- [API Testing Guide](API_TESTING_GUIDE.md) - manual authentication, CRUD, and validation checks with curl or Postman
 - [Technical Overview](TECHNICAL_OVERVIEW.md) - architecture, repository layout, validation rules, API plans, security, and AI-assisted development
 - [UI/UX Design Guide](UI_UX_DESIGN_GUIDE.md) - visual direction, accessibility, and interaction principles
 

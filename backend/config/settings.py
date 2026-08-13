@@ -15,11 +15,15 @@ def get_csv_env(name: str, default: str = "") -> list[str]:
     return [value.strip() for value in os.getenv(name, default).split(",") if value.strip()]
 
 
+def get_bool_env(name: str, default: bool) -> bool:
+    return os.getenv(name, str(default)).lower() == "true"
+
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     raise RuntimeError("DJANGO_SECRET_KEY must be set in a local .env file.")
 
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+DEBUG = get_bool_env("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = get_csv_env("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
@@ -31,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "authentication",
     "projects",
 ]
 
@@ -94,6 +99,49 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "authentication.session.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 
 CORS_ALLOWED_ORIGINS = get_csv_env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = get_csv_env("CSRF_TRUSTED_ORIGINS") or CORS_ALLOWED_ORIGINS
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = get_bool_env("DJANGO_COOKIE_SECURE", not DEBUG)
+SESSION_COOKIE_AGE = int(os.getenv("DJANGO_SESSION_COOKIE_AGE", "28800"))
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
+CSRF_FAILURE_VIEW = "authentication.views.csrf_failure"
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+
+if SESSION_COOKIE_AGE <= 0:
+    raise RuntimeError("DJANGO_SESSION_COOKIE_AGE must be a positive number.")
+
+if not DEBUG:
+    if not ALLOWED_HOSTS:
+        raise RuntimeError("DJANGO_ALLOWED_HOSTS must be set when DJANGO_DEBUG is False.")
+    if not SESSION_COOKIE_SECURE:
+        raise RuntimeError("DJANGO_COOKIE_SECURE must be True when DJANGO_DEBUG is False.")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "authentication": {"handlers": ["console"], "level": "INFO", "propagate": False},
+    },
+}

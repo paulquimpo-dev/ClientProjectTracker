@@ -1,238 +1,127 @@
 # API Manual Testing Guide
 
-Use this guide to verify the Phase 4 CRUD API with curl or Postman.
+Use this guide to verify the protected project API with curl or Postman. Project endpoints require an authenticated Django session and CSRF protection for state-changing requests.
 
 ## Before testing
 
-Activate the backend environment and start Django:
+Create a regular local user once, then start Django:
 
 ```powershell
 cd backend
 .\.venv\Scripts\Activate.ps1
 python manage.py migrate
+python manage.py shell
+```
+
+```python
+from getpass import getpass
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+User.objects.create_user(username=input("Username: ").strip(), password=getpass("Password: "))
+exit()
+```
+
+```powershell
 python manage.py runserver
 ```
 
-Keep that terminal open. The base API URL is:
-
-```text
-http://127.0.0.1:8000/projects/
-```
-
-Use a second terminal for curl, or open Postman. No authentication is currently required.
+Keep the server terminal open. The project API is `http://127.0.0.1:8000/projects/`.
 
 ## curl tests
 
-The examples below use `curl.exe`, which avoids PowerShell's `curl` alias behavior. JSON request bodies are piped through standard input so PowerShell does not remove their quotation marks.
+The examples use `curl.exe` and a temporary cookie jar. Replace `project-manager` and `your-password` with the regular account created above.
 
-### 1. List projects
+```powershell
+$cookieJar = Join-Path $env:TEMP 'client-project-tracker-cookies.txt'
+Remove-Item $cookieJar -ErrorAction Ignore
+
+function Get-CsrfToken {
+  param([string]$CookieJar)
+  $cookieLine = Get-Content $CookieJar | Where-Object { $_ -match '(^|\t)csrftoken\t' } | Select-Object -Last 1
+  return ($cookieLine -split "`t")[-1]
+}
+```
+
+### 1. Verify anonymous access is denied
 
 ```powershell
 curl.exe -i http://127.0.0.1:8000/projects/
 ```
 
-Expected: `200 OK` and a JSON array. An empty database returns `[]`.
+Expected: `401 Unauthorized`.
 
-### 2. Create a valid project
+### 2. Obtain a CSRF cookie and sign in
+
+```powershell
+curl.exe -i -c $cookieJar http://127.0.0.1:8000/auth/csrf/
+$csrfToken = Get-CsrfToken $cookieJar
+
+@'
+{"username":"project-manager","password":"your-password"}
+'@ | curl.exe -i -b $cookieJar -c $cookieJar -X POST http://127.0.0.1:8000/auth/login/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
+
+$csrfToken = Get-CsrfToken $cookieJar
+```
+
+Expected: `200 OK` and the signed-in user's ID and username. Do not commit, share, or save the cookie jar.
+
+### 3. List projects
+
+```powershell
+curl.exe -i -b $cookieJar http://127.0.0.1:8000/projects/
+```
+
+Expected: `200 OK` and a JSON array.
+
+### 4. Create a valid project
 
 ```powershell
 @'
 {"clientName":"Mabuhay Digital Solutions","projectName":"Customer Support Portal","description":"Build a customer support portal for service requests and status tracking.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
-'@ | curl.exe -i -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" --data-binary "@-"
+'@ | curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
 ```
 
-Expected: `201 Created`. Note the returned `id`; the following examples use `1`. Replace it if your returned ID is different.
+Expected: `201 Created`. Record the returned numeric `id` and use it below.
 
-### 3. Retrieve the project
-
-```powershell
-curl.exe -i http://127.0.0.1:8000/projects/1/
-```
-
-Expected: `200 OK` and the created project.
-
-### 4. Reject invalid data
+### 5. Reject invalid data
 
 ```powershell
 @'
-{"clientName":" ","projectName":"Invalid Support Portal","description":"This temporary record should be rejected.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
-'@ | curl.exe -i -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" --data-binary "@-"
+{"clientName":" ","projectName":"Invalid Portal","description":"This record should be rejected.","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
+'@ | curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
 ```
 
-Expected: `400 Bad Request` with a `clientName` validation error.
+Expected: `400 Bad Request` with meaningful `clientName` and/or `dueDate` errors.
 
-To test the date rule independently, use a valid client name:
+### 6. Update and delete a project
+
+Replace `1` with the created project ID.
 
 ```powershell
 @'
-{"clientName":"Mabuhay Digital Solutions","projectName":"Invalid Portal Schedule","description":"This temporary record has an invalid date range.","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
-'@ | curl.exe -i -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" --data-binary "@-"
+{"clientName":"Mabuhay Digital Solutions","projectName":"Updated Customer Support Portal","description":"Expanded scope.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
+'@ | curl.exe -i -b $cookieJar -X PUT http://127.0.0.1:8000/projects/1/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
+
+curl.exe -i -b $cookieJar -X DELETE http://127.0.0.1:8000/projects/1/ -H "X-CSRFToken: $csrfToken"
 ```
 
-Expected: `400 Bad Request` with a `dueDate` validation error.
+Expected: `200 OK` for the update and `204 No Content` for deletion.
 
-### 5. Update the project
+### 7. Sign out and clean up
 
 ```powershell
-@'
-{"clientName":"Mabuhay Digital Solutions","projectName":"Updated Customer Support Portal","description":"Expand the portal scope to include service requests and status notifications.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
-'@ | curl.exe -i -X PUT http://127.0.0.1:8000/projects/1/ -H "Content-Type: application/json" --data-binary "@-"
+curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/auth/logout/ -H "X-CSRFToken: $csrfToken"
+Remove-Item $cookieJar -ErrorAction Ignore
 ```
 
-Expected: `200 OK`. Retrieve the project again to confirm that the changes persisted.
-
-### 6. Retrieve a missing project
-
-```powershell
-curl.exe -i http://127.0.0.1:8000/projects/999999/
-```
-
-Expected: `404 Not Found`.
-
-### 7. Delete the project
-
-```powershell
-curl.exe -i -X DELETE http://127.0.0.1:8000/projects/1/
-```
-
-Expected: `204 No Content`. Retrieving the same ID afterward should return `404 Not Found`.
+Expected: `204 No Content`. A subsequent request to `/projects/` should again return `401 Unauthorized`.
 
 ## Postman tests
 
-Use this base URL:
+1. Send `GET http://127.0.0.1:8000/auth/csrf/` first; Postman stores the `csrftoken` cookie.
+2. Send `POST http://127.0.0.1:8000/auth/login/` with JSON credentials and header `X-CSRFToken` set to the `csrftoken` cookie value.
+3. For `POST`, `PUT`, `DELETE`, send the session cookies and the current `X-CSRFToken` header. Postman manages cookies automatically for the same host.
+4. Verify `GET /projects/` is `401` before login, `200` after login, and `401` again after `POST /auth/logout/`.
 
-```text
-http://127.0.0.1:8000/projects/
-```
-
-For requests with a body, select **Body > raw > JSON**. Postman should automatically set `Content-Type: application/json`.
-
-### 1. List projects
-
-- Method: `GET`
-- URL: `http://127.0.0.1:8000/projects/`
-- Body: none
-- Expected: `200 OK` and a JSON array
-
-### 2. Create a valid project
-
-- Method: `POST`
-- URL: `http://127.0.0.1:8000/projects/`
-- Body:
-
-```json
-{
-  "clientName": "Mabuhay Digital Solutions",
-  "projectName": "Customer Support Portal",
-  "description": "Build a customer support portal for service requests and status tracking.",
-  "status": "Planning",
-  "priority": "High",
-  "startDate": "2026-08-20",
-  "dueDate": "2026-10-15"
-}
-```
-
-Expected: `201 Created`. Save the returned numeric `id` and use it instead of `{id}` in the retrieve, update, and delete requests.
-
-### 3. Retrieve the created project
-
-- Method: `GET`
-- URL: `http://127.0.0.1:8000/projects/{id}/`
-- Body: none
-- Expected: `200 OK`
-
-For example, if creation returned `"id": 12`, use:
-
-```text
-http://127.0.0.1:8000/projects/12/
-```
-
-### 4. Reject a blank client name
-
-- Method: `POST`
-- URL: `http://127.0.0.1:8000/projects/`
-- Body:
-
-```json
-{
-  "clientName": " ",
-  "projectName": "Invalid Support Portal",
-  "description": "This temporary record should be rejected.",
-  "status": "Planning",
-  "priority": "High",
-  "startDate": "2026-08-20",
-  "dueDate": "2026-10-15"
-}
-```
-
-Expected: `400 Bad Request` with a `clientName` error.
-
-### 5. Reject an invalid date range
-
-- Method: `POST`
-- URL: `http://127.0.0.1:8000/projects/`
-- Body:
-
-```json
-{
-  "clientName": "Mabuhay Digital Solutions",
-  "projectName": "Invalid Portal Schedule",
-  "description": "This temporary record has an invalid date range.",
-  "status": "Planning",
-  "priority": "High",
-  "startDate": "2026-10-15",
-  "dueDate": "2026-08-20"
-}
-```
-
-Expected: `400 Bad Request` with a `dueDate` error.
-
-### 6. Update the created project
-
-- Method: `PUT`
-- URL: `http://127.0.0.1:8000/projects/{id}/`
-- Body:
-
-```json
-{
-  "clientName": "Mabuhay Digital Solutions",
-  "projectName": "Updated Customer Support Portal",
-  "description": "Expand the portal scope to include service requests and status notifications.",
-  "status": "In Progress",
-  "priority": "Medium",
-  "startDate": "2026-08-20",
-  "dueDate": "2026-10-15"
-}
-```
-
-Expected: `200 OK` with the updated project. Send another `GET` request for the same ID to confirm that the changes persisted.
-
-### 7. Retrieve a missing project
-
-- Method: `GET`
-- URL: `http://127.0.0.1:8000/projects/999999/`
-- Body: none
-- Expected: `404 Not Found`
-
-### 8. Delete the created project
-
-- Method: `DELETE`
-- URL: `http://127.0.0.1:8000/projects/{id}/`
-- Body: none
-- Expected: `204 No Content`
-
-Send a `GET` request for the deleted ID afterward. It should return `404 Not Found`.
-
-### Postman summary
-
-| Test | Method | URL | Expected status |
-| --- | --- | --- | --- |
-| List | `GET` | `/projects/` | `200` |
-| Create valid | `POST` | `/projects/` | `201` |
-| Create invalid | `POST` | `/projects/` | `400` |
-| Retrieve existing | `GET` | `/projects/{id}/` | `200` |
-| Update | `PUT` | `/projects/{id}/` | `200` |
-| Retrieve missing | `GET` | `/projects/999999/` | `404` |
-| Delete | `DELETE` | `/projects/{id}/` | `204` |
-
-Do not type `{id}` literally. Replace it with the numeric ID returned by the valid create request.
+Never place a real password, session cookie, or CSRF token in a saved collection or repository file.

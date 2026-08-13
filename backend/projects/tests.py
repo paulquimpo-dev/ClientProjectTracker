@@ -1,14 +1,19 @@
 from datetime import date
 
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 
 from .models import Project
 
 
 class ProjectAPITests(APITestCase):
     def setUp(self) -> None:
+        self.user = get_user_model().objects.create_user(
+            username="project-manager", password="correct-horse-battery-staple"
+        )
         self.project = Project.objects.create(
             client_name="Acme Corporation",
             project_name="Website Redesign",
@@ -20,6 +25,7 @@ class ProjectAPITests(APITestCase):
         )
         self.list_url = reverse("project-list")
         self.detail_url = reverse("project-detail", args=[self.project.pk])
+        self.client.force_authenticate(user=self.user)
 
     def test_required_project_routes_are_primary_api_contract(self) -> None:
         self.assertEqual(self.list_url, "/projects/")
@@ -143,3 +149,101 @@ class ProjectAPITests(APITestCase):
         response = self.client.delete(reverse("project-detail", args=[999999]))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class AuthenticationAPITests(APITestCase):
+    def setUp(self) -> None:
+        cache.clear()
+        self.password = "correct-horse-battery-staple"
+        self.user = get_user_model().objects.create_user(
+            username="project-manager", password=self.password
+        )
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+
+    def csrf_headers(self) -> dict[str, str]:
+        response = self.csrf_client.get(reverse("csrf"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return {"HTTP_X_CSRFTOKEN": self.csrf_client.cookies["csrftoken"].value}
+
+    def test_projects_require_authentication(self) -> None:
+        response = self.client.get(reverse("project-list"))
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_session_reports_anonymous_user(self) -> None:
+        response = self.client.get(reverse("session"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"authenticated": False})
+
+    def test_login_requires_csrf_token(self) -> None:
+        response = self.csrf_client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": self.password},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.json()["detail"],
+            "This action could not be verified. Refresh the page and try again.",
+        )
+
+    def test_login_session_and_logout_flow(self) -> None:
+        response = self.csrf_client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": self.password},
+            format="json",
+            **self.csrf_headers(),
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["user"]["username"], self.user.username)
+
+        session_response = self.csrf_client.get(reverse("session"))
+        self.assertEqual(session_response.json()["authenticated"], True)
+
+        logout_response = self.csrf_client.post(reverse("logout"), **self.csrf_headers())
+        self.assertEqual(logout_response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(self.csrf_client.get(reverse("session")).json(), {"authenticated": False})
+
+    def test_login_rejects_invalid_credentials(self) -> None:
+        response = self.csrf_client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": "incorrect-password"},
+            format="json",
+            **self.csrf_headers(),
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.json()["detail"], "Invalid username or password.")
+
+    def test_login_throttles_repeated_failed_attempts(self) -> None:
+        headers = self.csrf_headers()
+        for _ in range(5):
+            response = self.csrf_client.post(
+                reverse("login"),
+                {"username": self.user.username, "password": "incorrect-password"},
+                format="json",
+                **headers,
+            )
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        response = self.csrf_client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": "incorrect-password"},
+            format="json",
+            **headers,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(
+            response.json()["detail"], "Too many sign-in attempts. Please wait before trying again."
+        )
+
+    def test_cors_allows_only_the_configured_frontend_origin(self) -> None:
+        allowed = self.client.get(reverse("session"), HTTP_ORIGIN="http://127.0.0.1:5173")
+        untrusted = self.client.get(reverse("session"), HTTP_ORIGIN="https://untrusted.example")
+
+        self.assertEqual(allowed.headers.get("access-control-allow-origin"), "http://127.0.0.1:5173")
+        self.assertIsNone(untrusted.headers.get("access-control-allow-origin"))

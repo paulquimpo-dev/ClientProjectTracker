@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 23 - Bonus: Frontend Tests
+**Completed phase:** Phase 25 - Security Hardening and Secure Coding Review
 
-**Next phase:** Phase 24 - Bonus: Authentication
+**Next phase:** Phase 26 - Minor Revision and Experience Polish
 
 ## Phase status
 
@@ -36,8 +36,8 @@ This tracker records implementation progress against the [development blueprint]
 | 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; a subtle creation timestamp and accessible direction button make the sort order clear without changing stored data. |
 | 22. Bonus: Backend Automated Tests | Complete | Django API tests cover required CRUD, primary route contract, required names, valid status/priority choices, date ordering, and missing resources. |
 | 23. Bonus: Frontend Tests | Complete | Vitest and React Testing Library cover project-card rendering/actions and project-service endpoint and validation-error behavior. |
-| 24. Bonus: Authentication | Not started | Secure Django session authentication, sign-in/sign-out, and protected project API/UI access are planned. |
-| 25. Security Hardening and Secure Coding Review | Not started | CIA triad and applicable OWASP Top 10 controls will be reviewed and implemented proportionately. |
+| 24. Bonus: Authentication | Complete | Django session authentication protects project routes; CSRF-aware sign-in/sign-out and session checks are integrated into the React UI and covered by backend/frontend tests. |
+| 25. Security Hardening and Secure Coding Review | Complete | CIA/OWASP-guided hardening adds secure production settings, origin restrictions, safe CSRF errors, login throttling, security logs without credentials, and regression coverage. |
 | 26. Minor Revision and Experience Polish | Not started | Evidence-based workflow, UI, color, and UX refinements are planned after functional and security work is stable. |
 | 27-30. Submission Work | Not started | Security review, fresh-clone verification, technical reflection, and final submission review remain. |
 
@@ -205,9 +205,26 @@ This tracker records implementation progress against the [development blueprint]
 - Added frontend tests for project-card rendering/actions and the environment-configured `/projects/` service request and validation errors.
 - Backend tests, frontend tests, linting, and production build passed.
 
+### Phase 24
+
+- Added Django built-in-user session authentication with `GET /auth/csrf/`, `POST /auth/login/`, `POST /auth/logout/`, and `GET /auth/session/`.
+- Protected every `/projects/` endpoint; anonymous access returns `401 Unauthorized`.
+- Added restrictive credentialed CORS, trusted CSRF origins, session lifetime, and local/production cookie configuration through environment variables.
+- Added a React sign-in screen, session check, sign-out control, credentialed API client, CSRF header handling, and safe session-expiry handling.
+- Backend authentication/API tests, frontend tests, linting, and production build passed.
+
+### Phase 25
+
+- Added production-safe Django configuration checks, security headers, HTTPS/HSTS settings, and an eight-hour browser-session lifetime.
+- Narrowed local CORS and CSRF trust to the configured `127.0.0.1` frontend origin.
+- Replaced verbose Django CSRF diagnostics with a safe JSON error and logged authentication/CSRF events without usernames, passwords, cookies, tokens, or secrets.
+- Added a per-IP and username login throttle after five failed attempts in 15 minutes; successful sign-in resets the count.
+- Added automated coverage for safe CSRF errors, throttling, restricted CORS, and no frontend credential/token storage.
+- Django check, 25 backend tests, 6 frontend tests, linting, and production build passed.
+
 ## Current limitations
 
-- The required core application, documentation, and repository review are complete. Search, filters, sorting, and automated backend/frontend tests are implemented; the remaining planned bonus work is Phase 24 authentication.
+- The required core application, documentation, and security hardening are complete. The remaining planned work is Phase 26 minor workflow and UI/UX revision.
 
 ## Update convention
 

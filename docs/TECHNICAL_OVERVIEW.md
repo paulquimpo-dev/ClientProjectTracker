@@ -48,7 +48,15 @@ Phase 4 implements the required CRUD API.
 
 The external API uses camelCase fields such as `clientName`, `projectName`, `startDate`, and `dueDate`. The serializer maps these fields to Django's internal snake_case model fields.
 
-The API returns `200` for successful reads and updates, `201` for creation, `204` for deletion, `400` for invalid input, and `404` for missing projects. See the [API Testing Guide](API_TESTING_GUIDE.md) for repeatable manual checks.
+The API returns `200` for successful reads and updates, `201` for creation, `204` for deletion, `400` for invalid input, `401` for missing/invalid authentication, `403` for failed CSRF verification, `404` for missing projects, and `429` for throttled sign-in attempts. See the [API Testing Guide](API_TESTING_GUIDE.md) for repeatable manual checks.
+
+## Authentication
+
+The application uses Django's built-in `User` model, password hashing, and server-managed sessions. React never stores a password or reusable access token. The browser sends the `HttpOnly` session cookie with credentialed API requests, while a separate CSRF cookie/token protects state-changing requests. `/projects/` requires authentication and returns `401` when no valid session exists. The frontend uses `GET /auth/session/` to choose between the sign-in screen and the project tracker; `POST /auth/login/` and `POST /auth/logout/` start and end the server-side session.
+
+## Security hardening
+
+Phase 25 applies practical controls guided by the CIA triad and applicable OWASP Top 10 risks. Confidentiality is supported by protected routes, password hashing, `HttpOnly` sessions, origin allowlists, and no credential/token persistence in React. Integrity is supported by Django serializers, ORM use, CSRF protection, session rotation at login, and API authorization tests. Availability is supported by safe JSON failure responses, a five-attempt-per-15-minute login throttle, regression tests, and dependency checks. Production mode requires explicit allowed hosts, HTTPS redirect/HSTS settings, and secure cookies; local HTTP retains `DJANGO_COOKIE_SECURE=False` only through ignored local environment configuration.
 
 ## Automated testing
 

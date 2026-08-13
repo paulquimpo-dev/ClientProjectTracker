@@ -12,6 +12,7 @@ import {
   type ProjectPriority,
   type ProjectStatus,
 } from '../types/project'
+import type { AuthenticatedUser } from '../services/authService'
 
 type LoadState = 'loading' | 'success' | 'error'
 
@@ -31,7 +32,12 @@ const priorityRank: Record<ProjectPriority, number> = {
   Low: 1,
 }
 
-export function ProjectsPage() {
+interface ProjectsPageProps {
+  user: AuthenticatedUser
+  onSignOut: () => void
+}
+
+export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [isCreating, setIsCreating] = useState(false)
@@ -141,14 +147,18 @@ export function ProjectsPage() {
           <h1>Projects</h1>
           <p className="page-header__summary">Manage client projects and delivery timelines.</p>
         </div>
-        <button
-          type="button"
-          className="button button--primary"
-          onClick={() => { setIsCreating(true); setEditingProject(null); setSuccessMessage(null); setActionError(null) }}
-          aria-expanded={isCreating}
-        >
-          <span aria-hidden="true">+</span> New Project
-        </button>
+        <div className="page-header__actions">
+          <p className="signed-in-user">Signed in as <strong>{user.username}</strong></p>
+          <button type="button" className="button button--secondary" onClick={onSignOut}>Sign out</button>
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={() => { setIsCreating(true); setEditingProject(null); setSuccessMessage(null); setActionError(null) }}
+            aria-expanded={isCreating}
+          >
+            <span aria-hidden="true">+</span> New Project
+          </button>
+        </div>
       </header>
 
       <div className="project-controls" aria-label="Project search, filters, and sorting">

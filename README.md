@@ -29,7 +29,22 @@ Copy-Item .env.example .env
 npm install
 ```
 
-The frontend `.env` may retain its provided local API URL unless the backend runs elsewhere.
+Create a regular project-manager account before signing in. From `backend/`, with the virtual environment active:
+
+```powershell
+python manage.py shell
+```
+
+```python
+from getpass import getpass
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+User.objects.create_user(username=input("Username: ").strip(), password=getpass("Password: "))
+exit()
+```
+
+The frontend `.env` may retain its provided local API URL unless the backend runs elsewhere. Django stores the account password as a secure hash, not readable text. A superuser is optional and needed only for Django Admin, not for signing in to this application.
 
 For database provisioning, macOS/Linux commands, troubleshooting, and repository updates, see the [DevOps Guide](docs/DEVOPS_GUIDE.md).
 
@@ -45,7 +60,7 @@ cd backend
 python manage.py runserver
 ```
 
-The required API runs at [http://127.0.0.1:8000/projects/](http://127.0.0.1:8000/projects/).
+The required API runs at [http://127.0.0.1:8000/projects/](http://127.0.0.1:8000/projects/). Sign in through the frontend with the regular account created above; project endpoints return `401 Unauthorized` without an authenticated session.
 
 ### Terminal 2 — React frontend
 
@@ -54,9 +69,9 @@ cd frontend
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. Press `Ctrl+C` in either terminal to stop that development server.
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. Use this exact host—not `localhost`—because the local Django session and CSRF cookies are issued for `127.0.0.1`. Press `Ctrl+C` in either terminal to stop that development server.
 
-Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `http://127.0.0.1:8000`. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` so either local Vite address can reach the API.
+Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `http://127.0.0.1:8000`. Keep `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` for the local session-authentication flow.
 
 ## Testing
 
@@ -95,6 +110,7 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 - Search loaded projects by client or project name
 - Filter loaded projects by status and priority
 - Sort loaded projects by date, name, or priority
+- Sign in and sign out with Django session authentication
 - Load repeatable demonstration data with `python manage.py seed_projects`
 
 ## API and validation
@@ -106,6 +122,16 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 | `POST`   | `/projects/`      | Create a project   |
 | `PUT`    | `/projects/{id}/` | Update a project   |
 | `DELETE` | `/projects/{id}/` | Delete a project   |
+
+Project routes require an authenticated session. The authentication endpoints are `GET /auth/csrf/`, `POST /auth/login/`, `POST /auth/logout/`, and `GET /auth/session/`.
+
+## Security
+
+- Django password hashes and server-managed `HttpOnly` session cookies protect credentials; React does not store passwords or tokens in browser storage.
+- Authentication, project writes, and sign-out are protected by CSRF checks.
+- Only the configured frontend origin can make credentialed API requests; local development uses `http://127.0.0.1:5173/` consistently.
+- Five failed sign-in attempts for the same username and IP address are throttled for 15 minutes. Restart the backend to clear local development throttle state.
+- Production configuration requires `DJANGO_DEBUG=False`, explicit allowed hosts, HTTPS, and secure cookies.
 
 The API uses camelCase fields. Client and project names are required; status and priority must use supported values; start and due dates are required; and a due date cannot be earlier than its start date. The backend is authoritative, while the frontend provides immediate field feedback.
 
@@ -141,9 +167,9 @@ Django REST Framework
 
 ## Project status
 
-Phases 1–17 of the core blueprint are complete, along with the Phase 18–23 search, filtering, sorting, and automated-testing bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
+Phases 1–17 of the core blueprint are complete, along with the Phase 18–24 search, filtering, sorting, automated-testing, and session-authentication bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
 
-The required core is complete. Authentication is the only remaining planned optional bonus feature.
+The required core and planned optional features are complete. Security hardening and minor experience revisions remain planned review phases.
 
 ## AI-assisted development
 
@@ -153,4 +179,4 @@ OpenAI Codex assisted with planning, scaffolding, documentation, debugging, and 
 
 - The required full-stack core is complete.
 - Backend and frontend automated tests and repeatable seed data are implemented.
-- Authentication remains an optional future enhancement.
+- Authentication uses Django password hashing, server-managed sessions, `HttpOnly` session cookies, CSRF protection, and restricted credentialed CORS.

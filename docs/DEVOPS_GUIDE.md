@@ -49,7 +49,7 @@ Edit `.env` and replace the placeholder secrets:
 ```dotenv
 DJANGO_SECRET_KEY=replace-with-a-long-unique-random-value
 DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+DJANGO_ALLOWED_HOSTS=127.0.0.1
 
 DB_NAME=client_project_tracker
 DB_USER=postgres
@@ -57,10 +57,17 @@ DB_PASSWORD=replace-with-your-postgres-superuser-password
 DB_HOST=127.0.0.1
 DB_PORT=5432
 
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+CORS_ALLOWED_ORIGINS=http://127.0.0.1:5173
+CSRF_TRUSTED_ORIGINS=http://127.0.0.1:5173
+DJANGO_COOKIE_SECURE=False
+DJANGO_SESSION_COOKIE_AGE=28800
 ```
 
 The project currently uses the local PostgreSQL `postgres` superuser. Set `DB_PASSWORD` to that user's password. The `.env` file is ignored by Git and must never be committed. Django refuses to start when `DJANGO_SECRET_KEY` is missing.
+
+`DJANGO_COOKIE_SECURE=False` is for local HTTP development only. Set it to `True` when the deployed application is served over HTTPS. Keep the CORS and CSRF origin lists limited to the exact frontend origins that need credentialed API access.
+
+In production, set `DJANGO_DEBUG=False`, configure explicit `DJANGO_ALLOWED_HOSTS`, serve the application through HTTPS, and set `DJANGO_COOKIE_SECURE=True`. Django refuses to start in production mode without allowed hosts or secure session cookies.
 
 ### 3. Configure PostgreSQL
 
@@ -130,6 +137,23 @@ python manage.py runserver
 
 The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the required project API is available at [http://127.0.0.1:8000/projects/](http://127.0.0.1:8000/projects/). A `404` at the root `/` is expected because no root route is defined. Stop the server with `Ctrl+C`.
 
+Create a regular project-manager account once before opening the frontend:
+
+```powershell
+python manage.py shell
+```
+
+```python
+from getpass import getpass
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+User.objects.create_user(username=input("Username: ").strip(), password=getpass("Password: "))
+exit()
+```
+
+Django stores the account password as a hash. Do not place that password in `.env`, source files, tests, or documentation. `python manage.py createsuperuser` is optional and only needed for Django Admin access.
+
 ### 7. Run the frontend
 
 Open a second terminal from the repository root:
@@ -141,7 +165,7 @@ npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000` for local development.
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. Use `127.0.0.1` rather than `localhost` so the browser can return Django's session and CSRF cookies to the API. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000` for local development.
 
 Verify the frontend after installation or changes:
 
@@ -150,6 +174,14 @@ npm run test
 npm run lint
 npm run build
 ```
+
+## Authentication and local security checks
+
+- Use `http://127.0.0.1:5173/`, not `localhost`, so browser cookies match the `127.0.0.1` API host.
+- Project endpoints return `401` before sign-in and after sign-out.
+- State-changing requests require CSRF verification and return a safe `403` error if the token is missing or invalid.
+- Five failed login attempts for the same username and IP address are throttled for 15 minutes. Restart the backend during local development if you deliberately test the limit and need to clear it.
+- Never place passwords, cookies, CSRF tokens, database credentials, or `DJANGO_SECRET_KEY` in Git, logs, screenshots, or documentation.
 
 ## Load demonstration data
 
@@ -217,4 +249,4 @@ Reinstall requirements after `requirements.txt` changes and apply migrations aft
 | PowerShell blocks `Activate.ps1` | Use `.\.venv\Scripts\python.exe` directly for the Python commands. |
 | Port `8000` is in use | Run `python manage.py runserver 8001`. |
 | CORS request fails | Add the exact frontend origin to `CORS_ALLOWED_ORIGINS`. |
-| Port `5173` is in use | Run `npm run dev -- --port 5174`, then add that exact origin to `CORS_ALLOWED_ORIGINS`. |
+| Port `5173` is in use | Run `npm run dev -- --port 5174`, then add that exact `127.0.0.1` origin to both `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS`. |
