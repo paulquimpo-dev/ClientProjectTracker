@@ -4,6 +4,8 @@ import type { Project } from '../types/project'
 
 interface ProjectCardProps {
   project: Project
+  onEdit: (project: Project) => void
+  onDelete: (project: Project) => void
 }
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -16,7 +18,7 @@ function formatDate(date: string): string {
   return dateFormatter.format(new Date(`${date}T00:00:00`))
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   return (
     <article className="project-card">
       <div className="project-card__header">
@@ -38,10 +40,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {formatDate(project.startDate)} <span aria-hidden="true">→</span> {formatDate(project.dueDate)}
         </p>
         <div className="project-card__actions" aria-label={`Actions for ${project.projectName}`}>
-          <button type="button" className="button button--text" disabled title="Editing will be available in Phase 11">
+          <button type="button" className="button button--text" onClick={() => onEdit(project)}>
             Edit
           </button>
-          <button type="button" className="button button--text button--danger" disabled title="Deletion will be available in Phase 12">
+          <button type="button" className="button button--text button--danger" onClick={() => onDelete(project)}>
             Delete
           </button>
         </div>

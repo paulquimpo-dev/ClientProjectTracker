@@ -11,6 +11,7 @@ type FieldErrors = Partial<Record<keyof ProjectInput, string>>
 
 interface ProjectFormProps {
   initialValues?: ProjectInput
+  mode: 'create' | 'edit'
   submitLabel: string
   submittingLabel: string
   onCancel: () => void
@@ -55,6 +56,7 @@ function getServerFieldErrors(validationErrors?: Record<string, string[]>): Fiel
 
 export function ProjectForm({
   initialValues = emptyProject,
+  mode,
   submitLabel,
   submittingLabel,
   onCancel,
@@ -77,6 +79,8 @@ export function ProjectForm({
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors)
+      const firstInvalidField = Object.keys(errors)[0]
+      requestAnimationFrame(() => document.getElementById(firstInvalidField)?.focus())
       return
     }
 
@@ -101,8 +105,8 @@ export function ProjectForm({
     <section className="project-form-panel" aria-labelledby="project-form-title">
       <div className="project-form-panel__header">
         <div>
-          <p className="eyebrow">New project</p>
-          <h2 id="project-form-title">Create a project</h2>
+          <p className="eyebrow">{mode === 'create' ? 'New project' : 'Edit project'}</p>
+          <h2 id="project-form-title">{mode === 'create' ? 'Create a project' : 'Update project'}</h2>
           <p>Fields marked with an asterisk are required.</p>
         </div>
         <button type="button" className="button button--text" onClick={onCancel} disabled={isSubmitting}>
@@ -229,7 +233,7 @@ function FormField({ label, error, required = false, className = '', children }:
         {label}{required ? <span aria-hidden="true"> *</span> : null}
       </label>
       {children}
-      {error ? <p className="field-error" id={`${id}-error`}>{error}</p> : null}
+      {error ? <p className="field-error" id={`${id}-error`} role="alert">{error}</p> : null}
     </div>
   )
 }

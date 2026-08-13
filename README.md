@@ -4,7 +4,7 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-10 are complete:
+Phases 1-13 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
@@ -16,8 +16,10 @@ Phases 1-10 are complete:
 - Typed frontend API service layer and verified backend connection
 - Responsive project listing with loading, empty, and API-error states
 - Project creation form with frontend and backend validation feedback
+- Project editing and confirmed deletion with persisted API updates
+- Friendly frontend validation, loading, and failure handling across CRUD flows
 
-The edit/delete interface and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+The core-completion review and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
@@ -60,7 +62,7 @@ npm install
 npm run dev
 ```
 
-The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The project list and creation form are available; edit and delete controls follow in Phases 11–12.
+The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The list, create, edit, and confirmed-delete flows are available.
 
 ## Documentation
 
@@ -79,5 +81,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- The project list and project creation are implemented, but editing and deletion are not available yet.
+- Required frontend CRUD and error handling are implemented; frontend automated tests are planned for a later phase.
 - The backend test suite and seed data are implemented; frontend tests are planned for a later phase.

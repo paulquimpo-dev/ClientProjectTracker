@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 10 - Create Project
+**Completed phase:** Phase 13 - Frontend Validation and Error Handling
 
-**Next phase:** Phase 11 - Edit Project
+**Next phase:** Phase 14 - Core Assessment Complete
 
 ## Phase status
 
@@ -23,7 +23,10 @@ This tracker records implementation progress against the [development blueprint]
 | 8. API Service Layer | Complete | Typed Project API client functions, friendly API errors, runtime connection status, and configurable API base URL are implemented. |
 | 9. Project Listing | Complete | Responsive project cards, reusable status/priority badges, and loading, empty, and API-error states are implemented using the Phase 8 API service. |
 | 10. Create Project | Complete | A reusable ProjectForm creates validated projects through the API, preserves failed input, surfaces field errors, and updates the visible list on success. |
-| 11-17. Frontend and Core Completion | Not started | Edit/delete interface, regression testing, documentation, and repository review. |
+| 11. Edit Project | Complete | The reusable ProjectForm prepopulates project values, sends updates through the API, and updates the visible list after persistence succeeds. |
+| 12. Delete Project | Complete | Delete requires an explicit confirmation, persists through the API, removes the project from the visible list, and reports failures clearly. |
+| 13. Frontend Validation and Error Handling | Complete | Field validation, focus management, friendly save/delete/API errors, and failure-state regression checks are implemented. |
+| 14-17. Frontend and Core Completion | Not started | Core completion review, regression testing, documentation, and repository review. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -116,9 +119,29 @@ This tracker records implementation progress against the [development blueprint]
 - An invalid date range was rejected by the backend with `400`.
 - Frontend linting and production build passed.
 
+### Phases 11–12
+
+- Edit actions now open the reusable ProjectForm prepopulated with the selected project's current values.
+- Successful updates use the shared `updateProject` service, persist through Django/PostgreSQL, and replace the project immediately in the visible list.
+- Delete actions open an explicit confirmation panel naming the selected project; deletion only occurs after confirmation.
+- Successful deletions use the shared `deleteProject` service and remove the project from the visible list.
+- Delete failures retain the confirmation choice and show a user-friendly error.
+- End-to-end verification created a temporary record, persisted an update, deleted it with `204`, verified a `404` afterward, and removed the temporary record.
+- Frontend linting and production build passed.
+
+### Phase 13
+
+- Required names, dates, and date ordering are checked before submission, with field-specific feedback.
+- Client-side validation now moves keyboard focus to the first invalid field.
+- Backend validation messages are mapped to their matching fields and entered form values remain intact after a failed save.
+- Friendly errors cover unreachable API, missing projects, failed saves, and failed deletes; raw framework/network errors are not shown.
+- Loading, empty, and retryable list-failure states remain explicit.
+- Backend regression suite passed all 14 tests; live invalid-form and missing-project checks returned `400` and `404` respectively.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- Project editing and deletion are not implemented yet.
+- Required frontend CRUD, validation, and user-facing error handling are implemented. Phase 14 is the core-completion checkpoint.
 
 ## Update convention
 
