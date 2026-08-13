@@ -36,7 +36,7 @@ export function LoginPage({ message, onSignedIn }: LoginPageProps) {
   return (
     <main className="login-page">
       <section className="login-panel" aria-labelledby="login-title">
-        <p className="eyebrow">Client Project Tracker</p>
+        <img className="brand-logo brand-logo--login" src="/branding/client-project-tracker-logo.png" alt="Client Project Tracker" />
         <h1 id="login-title">Sign in</h1>
         <p>Use your project-manager account to access client projects.</p>
 

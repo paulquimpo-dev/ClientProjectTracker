@@ -35,6 +35,16 @@
   color: var(--text-secondary);
 }
 
+.brand-logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.brand-logo--header { height: 3.25rem; }
+.brand-logo--login { height: 3.5rem; margin-bottom: 1.5rem; }
+
 .page-header__actions {
   display: flex;
   flex-wrap: wrap;
@@ -62,7 +72,7 @@
   box-shadow: 0 12px 32px rgb(23 32 51 / 0.08);
 }
 
-.login-panel h1 { margin: 0.5rem 0; color: var(--royal-blue); font-size: 2rem; }
+.login-panel h1 { margin: 0 0 0.5rem; color: var(--royal-blue); font-size: 2rem; }
 .login-panel > p:not(.eyebrow):not(.form-error) { margin: 0 0 1.5rem; color: var(--text-secondary); }
 .login-form { display: grid; gap: 0.5rem; }
 .login-form label { margin-top: 0.5rem; font-weight: 750; }

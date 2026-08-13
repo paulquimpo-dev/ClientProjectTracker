@@ -4,6 +4,13 @@ This guide defines the visual foundation for the Client Project Tracker frontend
 
 > **Living design guide:** This palette and its usage rules are the current baseline, not a permanent constraint. They may change during future iterations as usability feedback, accessibility checks, product needs, or the visual direction evolve. Any revision should preserve clear semantic status/priority meaning and sufficient color contrast.
 
+## Brand assets
+
+- Horizontal wordmark: `frontend/public/branding/client-project-tracker-logo.png`
+- Icon/favicon: `frontend/public/branding/client-project-tracker-icon.png`
+
+Use the horizontal wordmark at a restrained size in the application header and sign-in screen. Use the icon as the browser favicon and wherever a compact brand mark is needed. Do not stretch, recolor, crop, or place the logo on a low-contrast surface.
+
 ## Design direction
 
 The interface should feel:

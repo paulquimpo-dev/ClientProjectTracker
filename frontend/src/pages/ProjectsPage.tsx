@@ -143,7 +143,7 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
     <main className="projects-page">
       <header className="page-header">
         <div>
-          <p className="eyebrow">Client Project Tracker</p>
+          <img className="brand-logo brand-logo--header" src="/branding/client-project-tracker-logo.png" alt="Client Project Tracker" />
           <h1>Projects</h1>
           <p className="page-header__summary">Manage client projects and delivery timelines.</p>
         </div>
