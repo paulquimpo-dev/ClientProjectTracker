@@ -128,7 +128,7 @@ python manage.py test
 python manage.py runserver
 ```
 
-The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/). A `404` at `/` is expected until Phase 4 adds API routes. Stop the server with `Ctrl+C`.
+The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the project API is available at [http://127.0.0.1:8000/api/projects/](http://127.0.0.1:8000/api/projects/). A `404` at the root `/` is expected because no root route is defined. Stop the server with `Ctrl+C`.
 
 ## Load demonstration data
 

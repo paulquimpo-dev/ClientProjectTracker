@@ -4,13 +4,14 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-5 are complete:
+Phases 1-6 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
 - Serializer and backend validation
 - REST API with project CRUD operations
 - Repeatable local demonstration data command
+- Verified backend completion gate
 
 The React frontend and broader automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
