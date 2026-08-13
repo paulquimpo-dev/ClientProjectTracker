@@ -23,6 +23,7 @@ ClientProjectTracker/
 |-- backend/
 |   |-- config/                 # Django settings and root URLs
 |   |-- projects/               # Model, migration, admin, and serializer
+|   |   `-- management/commands/# Local seed command
 |   |-- manage.py
 |   `-- requirements.txt
 |-- docs/                       # Extended project documentation
@@ -57,6 +58,10 @@ The backend is the authoritative validation layer. It currently enforces:
 - Priority must be `Low`, `Medium`, or `High`.
 - Start and due dates are required.
 - The due date cannot be earlier than the start date.
+
+## Demonstration data
+
+`python manage.py seed_projects` loads six fictional Philippine-based client projects. Client and project names identify each seed record. Repeated runs avoid duplicates and synchronize the approved seed values without deleting unrelated projects.
 
 ## Configuration and security
 

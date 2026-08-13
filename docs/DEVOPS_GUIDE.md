@@ -130,6 +130,23 @@ python manage.py runserver
 
 The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/). A `404` at `/` is expected until Phase 4 adds API routes. Stop the server with `Ctrl+C`.
 
+## Load demonstration data
+
+From `backend/`, with the virtual environment active:
+
+```powershell
+python manage.py seed_projects
+```
+
+The command loads six fictional Philippine-based client projects. It can be rerun safely: missing seed records are created, changed seed values are synchronized, duplicates are avoided, and unrelated user projects are preserved.
+
+After starting Django, verify the records through the API:
+
+```powershell
+curl.exe http://127.0.0.1:8000/api/projects/
+```
+
+
 ## Fetch the latest repository changes
 
 From the repository root, check for local work:

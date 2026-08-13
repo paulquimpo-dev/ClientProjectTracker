@@ -4,14 +4,15 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-4 are complete:
+Phases 1-5 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
 - Serializer and backend validation
 - REST API with project CRUD operations
+- Repeatable local demonstration data command
 
-The React frontend, seed data, and broader automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+The React frontend and broader automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
@@ -35,6 +36,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python manage.py migrate
+python manage.py seed_projects
 python manage.py runserver
 ```
 
