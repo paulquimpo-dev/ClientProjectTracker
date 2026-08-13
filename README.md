@@ -4,7 +4,7 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-6 are complete:
+Phases 1-7 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
@@ -12,14 +12,15 @@ Phases 1-6 are complete:
 - REST API with project CRUD operations
 - Repeatable local demonstration data command
 - Verified backend completion gate
+- React, TypeScript, and Vite frontend foundation
 
-The React frontend and broader automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+Project API integration, the CRUD interface, and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
 | Layer | Technology |
 | --- | --- |
-| Frontend (planned) | React, TypeScript, Vite |
+| Frontend | React, TypeScript, Vite |
 | Backend | Python 3.12+, Django 5.2, Django REST Framework |
 | Database | PostgreSQL |
 | Configuration | `python-dotenv`, `.env` |
@@ -45,6 +46,19 @@ Before running the backend, update `.env` with a unique `DJANGO_SECRET_KEY` and 
 
 For database provisioning, macOS/Linux commands, verification, troubleshooting, and repository update instructions, read the [DevOps Guide](docs/DEVOPS_GUIDE.md).
 
+### Frontend
+
+In a second terminal, start the Vite development server:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
+npm install
+npm run dev
+```
+
+The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the upcoming service layer; it defaults to `http://127.0.0.1:8000/api` when unset.
+
 ## Documentation
 
 Extended project documentation is available in the [`docs/` directory](docs/README.md):
@@ -61,5 +75,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- The React frontend is not implemented yet.
-- Seed data and the complete automated test suite are not implemented yet.
+- The frontend is a working foundation shell and does not yet call the API or display projects.
+- The backend test suite and seed data are implemented; frontend tests are planned for a later phase.

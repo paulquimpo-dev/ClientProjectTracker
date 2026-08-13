@@ -1,0 +1,22 @@
+.app-shell {
+  width: min(100% - 2rem, 720px);
+  margin: 0 auto;
+  padding: 8rem 0;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary {
+  max-width: 38rem;
+  margin: 0 auto;
+}
+
+.api-status {
+  margin-top: 2rem;
+}
