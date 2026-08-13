@@ -33,7 +33,7 @@ This tracker records implementation progress against the [development blueprint]
 | 18. Bonus: Search | Complete | Client-side, case-insensitive search filters loaded projects by client name and project name without changing backend behavior. |
 | 19. Bonus: Status Filter | Complete | Client-side status filtering works alongside search and preserves the existing CRUD flows. |
 | 20. Bonus: Priority Filter | Complete | Client-side priority filtering combines with search and status filtering using clear all-values defaults. |
-| 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; an accessible direction button switches ascending and descending order without changing stored data. |
+| 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; a subtle creation timestamp and accessible direction button make the sort order clear without changing stored data. |
 | 22-31. Bonus and Submission Work | Not started | Tests and submission polish remain. |
 
 ## Verification record

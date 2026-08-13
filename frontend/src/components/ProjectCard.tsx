@@ -14,8 +14,21 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 })
 
+const timestampFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: '2-digit',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+})
+
 function formatDate(date: string): string {
   return dateFormatter.format(new Date(`${date}T00:00:00`))
+}
+
+function formatTimestamp(timestamp: string): string {
+  return timestampFormatter.format(new Date(timestamp))
 }
 
 export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
@@ -33,6 +46,10 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
       </div>
 
       {project.description ? <p className="project-card__description">{project.description}</p> : null}
+
+      <p className="project-card__created">
+        Created <time dateTime={project.created_at}>{formatTimestamp(project.created_at)}</time>
+      </p>
 
       <footer className="project-card__footer">
         <p className="project-card__dates">
