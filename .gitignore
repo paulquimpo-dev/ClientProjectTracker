@@ -1,4 +1,4 @@
-# Python
+#Python 
 backend/.venv/
 __pycache__/
 *.py[cod]
@@ -7,7 +7,7 @@ __pycache__/
 .env
 backend/.env
 
-# Django
+# Django 
 *.sqlite3
 staticfiles/
 
