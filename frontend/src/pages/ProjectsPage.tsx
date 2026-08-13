@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ProjectForm } from '../components/ProjectForm'
@@ -26,6 +26,12 @@ type SortField =
 
 type SortDirection = 'ascending' | 'descending'
 
+function getSortDirectionDescription(field: SortField, direction: SortDirection) {
+  if (field === 'priority') return direction === 'ascending' ? 'Low to high priority' : 'High to low priority'
+  if (field === 'client-name' || field === 'project-name') return direction === 'ascending' ? 'A to Z' : 'Z to A'
+  return direction === 'ascending' ? 'Earliest first' : 'Latest first'
+}
+
 const priorityRank: Record<ProjectPriority, number> = {
   High: 3,
   Medium: 2,
@@ -35,6 +41,117 @@ const priorityRank: Record<ProjectPriority, number> = {
 interface ProjectsPageProps {
   user: AuthenticatedUser
   onSignOut: () => void
+}
+
+interface SelectOption<T extends string> {
+  label: string
+  value: T
+}
+
+interface SelectControlProps<T extends string> {
+  id: string
+  label: string
+  options: readonly SelectOption<T>[]
+  value: T
+  onChange: (value: T) => void
+}
+
+function SelectControl<T extends string>({ id, label, options, value, onChange }: SelectControlProps<T>) {
+  const [isOpen, setIsOpen] = useState(false)
+  const controlRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const selectedIndex = Math.max(0, options.findIndex((option) => option.value === value))
+
+  useEffect(() => {
+    function closeWhenClickingAway(event: MouseEvent) {
+      if (!controlRef.current?.contains(event.target as Node)) setIsOpen(false)
+    }
+
+    document.addEventListener('mousedown', closeWhenClickingAway)
+    return () => document.removeEventListener('mousedown', closeWhenClickingAway)
+  }, [])
+
+  useEffect(() => {
+    if (isOpen) optionRefs.current[selectedIndex]?.focus()
+  }, [isOpen, selectedIndex])
+
+  function selectOption(option: SelectOption<T>) {
+    onChange(option.value)
+    setIsOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  function handleOptionKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const nextIndex = event.key === 'ArrowDown' ? (index + 1) % options.length : (index - 1 + options.length) % options.length
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      optionRefs.current[nextIndex]?.focus()
+    }
+
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault()
+      optionRefs.current[event.key === 'Home' ? 0 : options.length - 1]?.focus()
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      setIsOpen(false)
+      triggerRef.current?.focus()
+    }
+  }
+
+  return (
+    <div className="custom-select" ref={controlRef}>
+      <label id={`${id}-label`} htmlFor={`${id}-trigger`}>{label}</label>
+      <button
+        ref={triggerRef}
+        id={`${id}-trigger`}
+        type="button"
+        className="custom-select__trigger"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-labelledby={`${id}-label ${id}-value`}
+        onClick={() => setIsOpen((open) => !open)}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault()
+            setIsOpen(true)
+          }
+        }}
+      >
+        <span id={`${id}-value`}>{options[selectedIndex]?.label}</span>
+        <svg className="custom-select__indicator" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      {isOpen ? (
+        <ul className="custom-select__menu" role="listbox" aria-labelledby={`${id}-label`}>
+          {options.map((option, index) => {
+            const isSelected = option.value === value
+
+            return (
+              <li key={option.value}>
+                <button
+                  ref={(element) => { optionRefs.current[index] = element }}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  className="custom-select__option"
+                  onClick={() => selectOption(option)}
+                  onKeyDown={(event) => handleOptionKeyDown(event, index)}
+                >
+                  <span>{option.label}</span>
+                  {isSelected ? <span aria-hidden="true">✓</span> : null}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
+    </div>
+  )
 }
 
 export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
@@ -51,6 +168,10 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
   const [priorityFilter, setPriorityFilter] = useState<ProjectPriority | 'all'>('all')
   const [sortField, setSortField] = useState<SortField>('created-at')
   const [sortDirection, setSortDirection] = useState<SortDirection>('descending')
+  const currentSortDirectionDescription = getSortDirectionDescription(sortField, sortDirection)
+  const nextSortDirection = sortDirection === 'ascending' ? 'descending' : 'ascending'
+  const nextSortDirectionDescription = getSortDirectionDescription(sortField, nextSortDirection)
+  const hasActiveProjectControls = searchQuery !== '' || statusFilter !== 'all' || priorityFilter !== 'all' || sortField !== 'created-at' || sortDirection !== 'descending'
 
   const displayedProjects = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase()
@@ -135,6 +256,14 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
     }
   }
 
+  function resetProjectControls() {
+    setSearchQuery('')
+    setStatusFilter('all')
+    setPriorityFilter('all')
+    setSortField('created-at')
+    setSortDirection('descending')
+  }
+
   useEffect(() => {
     void loadProjects()
   }, [loadProjects])
@@ -165,13 +294,35 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
 
       <div className="project-controls" aria-label="Project search, filters, and sorting">
         <div className="project-controls__heading">
-          <p>Find projects</p>
-          <span>Search, filter, or change the display order.</span>
+          <div className="project-controls__heading-copy">
+            <p>Browse projects</p>
+            <span>— Search, filter, and sort.</span>
+          </div>
+          {loadState === 'success' ? (
+            <div className="project-controls__meta">
+              <span className="project-controls__count" aria-live="polite">
+                {displayedProjects.length} {displayedProjects.length === 1 ? 'project' : 'projects'}
+              </span>
+              {hasActiveProjectControls ? (
+                <button
+                  type="button"
+                  className="project-controls__reset"
+                  onClick={resetProjectControls}
+                  title="Reset search, filters, and sorting"
+                >
+                  Reset all
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
         <div className="project-search">
-        <label htmlFor="project-search">Search projects</label>
+        <label htmlFor="project-search">Search</label>
         <div className="project-search__input-wrap">
-          <span aria-hidden="true">⌕</span>
+          <svg className="project-search__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="6" />
+            <path d="m16 16 4 4" />
+          </svg>
           <input
             id="project-search"
             type="search"
@@ -182,53 +333,58 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
         </div>
         </div>
 
-        <div className="project-filter">
-          <label htmlFor="status-filter">Status</label>
-          <select
-            id="status-filter"
-            value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value as ProjectStatus | 'all')}
-          >
-            <option value="all">All statuses</option>
-            {PROJECT_STATUSES.map((status) => <option key={status}>{status}</option>)}
-          </select>
-        </div>
+        <SelectControl
+          id="status-filter"
+          label="Status"
+          value={statusFilter}
+          onChange={(value) => setStatusFilter(value)}
+          options={[
+            { value: 'all', label: 'All statuses' },
+            ...PROJECT_STATUSES.map((status) => ({ value: status, label: status })),
+          ]}
+        />
 
-        <div className="project-filter">
-          <label htmlFor="priority-filter">Priority</label>
-          <select
-            id="priority-filter"
-            value={priorityFilter}
-            onChange={(event) => setPriorityFilter(event.target.value as ProjectPriority | 'all')}
-          >
-            <option value="all">All priorities</option>
-            {PROJECT_PRIORITIES.map((priority) => <option key={priority}>{priority}</option>)}
-          </select>
-        </div>
+        <SelectControl
+          id="priority-filter"
+          label="Priority"
+          value={priorityFilter}
+          onChange={(value) => setPriorityFilter(value)}
+          options={[
+            { value: 'all', label: 'All priorities' },
+            ...PROJECT_PRIORITIES.map((priority) => ({ value: priority, label: priority })),
+          ]}
+        />
 
         <div className="project-filter project-filter--sort">
-          <label htmlFor="project-sort">Sort by</label>
           <div className="project-sort-control">
-            <select
+            <SelectControl
               id="project-sort"
+              label="Sort by"
               value={sortField}
-              onChange={(event) => setSortField(event.target.value as SortField)}
-            >
-              <option value="created-at">Date created</option>
-              <option value="due-date">Due date</option>
-              <option value="start-date">Start date</option>
-              <option value="client-name">Client name</option>
-              <option value="project-name">Project name</option>
-              <option value="priority">Priority</option>
-            </select>
+              onChange={(value) => setSortField(value)}
+              options={[
+                { value: 'created-at', label: 'Date created' },
+                { value: 'due-date', label: 'Due date' },
+                { value: 'start-date', label: 'Start date' },
+                { value: 'client-name', label: 'Client name' },
+                { value: 'project-name', label: 'Project name' },
+                { value: 'priority', label: 'Priority' },
+              ]}
+            />
             <button
               type="button"
               className="sort-direction-button"
               onClick={() => setSortDirection((direction) => direction === 'ascending' ? 'descending' : 'ascending')}
-              aria-label={`Sort ${sortDirection === 'ascending' ? 'descending' : 'ascending'}`}
-              title={`Sort ${sortDirection === 'ascending' ? 'descending' : 'ascending'}`}
+              aria-label={`Currently ${currentSortDirectionDescription}. Select to sort ${nextSortDirectionDescription}.`}
+              title={`Currently ${currentSortDirectionDescription}. Select to sort ${nextSortDirectionDescription}.`}
             >
-              <span aria-hidden="true">{sortDirection === 'ascending' ? '↑' : '↓'}</span>
+              <svg className="sort-direction-button__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                {sortDirection === 'ascending' ? (
+                  <path d="M12 20V4m0 0-5 5m5-5 5 5" />
+                ) : (
+                  <path d="M12 4v16m0 0-5-5m5 5 5-5" />
+                )}
+              </svg>
             </button>
           </div>
         </div>

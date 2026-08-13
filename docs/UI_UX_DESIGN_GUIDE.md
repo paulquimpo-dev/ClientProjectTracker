@@ -101,6 +101,8 @@ Use clear hierarchy:
 - Group status and priority badges together.
 - Keep creation metadata above a consistently labelled **Schedule** and clearly separated actions in each card footer.
 - Group search, filters, and sorting inside one quiet control panel so users understand they work together.
+- Use the shared custom select control for filters and sorting: selected, hover, focus, and keyboard states must be clear and consistent instead of relying on browser-native option menus.
+- Show a quiet matching-project count in the browsing panel; reveal **Reset all** only after search, filtering, or sorting differs from its default state.
 - Use a subtle indigo-tinted control panel for browsing tools and a narrow semantic status accent on each project card; reserve stronger text color for the client, project name, and schedule hierarchy.
 - Treat status and priority as related metadata: both use the same soft-filled, subtly bordered pill component. Semantic color and the label distinguish the concepts; consistent widths and centered, compact semibold text keep card rows aligned predictably.
 - On narrow screens, stack card content and keep actions comfortably tappable.
