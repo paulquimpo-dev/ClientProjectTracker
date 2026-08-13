@@ -60,15 +60,26 @@ Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `
 
 ## Testing
 
+### Automated tests
+
+- Backend: Django API/integration tests run against a temporary test database.
+- Frontend: Vitest unit/component tests run in a simulated browser.
+
 ```powershell
-# Backend
+# Backend API/integration tests
 cd backend
 .\.venv\Scripts\Activate.ps1
 python manage.py test
 
-# Frontend
+# Frontend unit/component tests
 cd ../frontend
 npm run test
+```
+
+### Frontend quality checks
+
+```powershell
+cd frontend
 npm run lint
 npm run build
 ```
@@ -88,13 +99,13 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 
 ## API and validation
 
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `GET` | `/projects/` | List projects |
-| `GET` | `/projects/{id}/` | Retrieve a project |
-| `POST` | `/projects/` | Create a project |
-| `PUT` | `/projects/{id}/` | Update a project |
-| `DELETE` | `/projects/{id}/` | Delete a project |
+| Method   | Endpoint          | Purpose            |
+| -------- | ----------------- | ------------------ |
+| `GET`    | `/projects/`      | List projects      |
+| `GET`    | `/projects/{id}/` | Retrieve a project |
+| `POST`   | `/projects/`      | Create a project   |
+| `PUT`    | `/projects/{id}/` | Update a project   |
+| `DELETE` | `/projects/{id}/` | Delete a project   |
 
 The API uses camelCase fields. Client and project names are required; status and priority must use supported values; start and due dates are required; and a due date cannot be earlier than its start date. The backend is authoritative, while the frontend provides immediate field feedback.
 
@@ -121,12 +132,12 @@ Django REST Framework
 
 ## Technology stack
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React, TypeScript, Vite |
-| Backend | Python 3.12+, Django 5.2, Django REST Framework |
-| Database | PostgreSQL |
-| Configuration | `python-dotenv`, `.env` |
+| Layer         | Technology                                      |
+| ------------- | ----------------------------------------------- |
+| Frontend      | React, TypeScript, Vite                         |
+| Backend       | Python 3.12+, Django 5.2, Django REST Framework |
+| Database      | PostgreSQL                                      |
+| Configuration | `python-dotenv`, `.env`                         |
 
 ## Project status
 

@@ -36,7 +36,10 @@ This tracker records implementation progress against the [development blueprint]
 | 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; a subtle creation timestamp and accessible direction button make the sort order clear without changing stored data. |
 | 22. Bonus: Backend Automated Tests | Complete | Django API tests cover required CRUD, primary route contract, required names, valid status/priority choices, date ordering, and missing resources. |
 | 23. Bonus: Frontend Tests | Complete | Vitest and React Testing Library cover project-card rendering/actions and project-service endpoint and validation-error behavior. |
-| 24-28. Bonus and Submission Work | Not started | Authentication and final submission polish remain. |
+| 24. Bonus: Authentication | Not started | Secure Django session authentication, sign-in/sign-out, and protected project API/UI access are planned. |
+| 25. Security Hardening and Secure Coding Review | Not started | CIA triad and applicable OWASP Top 10 controls will be reviewed and implemented proportionately. |
+| 26. Minor Revision and Experience Polish | Not started | Evidence-based workflow, UI, color, and UX refinements are planned after functional and security work is stable. |
+| 27-30. Submission Work | Not started | Security review, fresh-clone verification, technical reflection, and final submission review remain. |
 
 ## Verification record
 

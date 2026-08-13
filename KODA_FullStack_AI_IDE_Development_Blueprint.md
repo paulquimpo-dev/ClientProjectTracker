@@ -1575,15 +1575,36 @@ Do not spend excessive time configuring frontend testing.
 
 ## Goal
 
-Add simple, secure access control so project data is available only to authenticated users.
+Add secure, session-based access control so project data is available only to authenticated users.
+
+## Architecture decision
+
+Use Django's built-in `User` model and server-managed session authentication. Do not store passwords, JWTs, or reusable access tokens in React, browser storage, or source code.
+
+```text
+Sign-in page
+    ↓ username + password over HTTPS
+Django validates credentials
+    ↓
+Secure server-managed session cookie
+    ↓
+Authenticated React requests include the cookie
+    ↓
+Protected /projects/ API permits or denies access
+```
+
+There is no public registration flow. An administrator creates users with `python manage.py createsuperuser`.
 
 ## Tasks
 
-1. Choose and document the authentication approach before implementation.
-2. Add sign-in and sign-out flows.
-3. Protect the project API so unauthenticated requests receive a meaningful `401 Unauthorized` response.
-4. Protect the project-management UI and provide a clear sign-in state.
-5. Keep all existing CRUD, validation, search, filters, and sorting behavior working for signed-in users.
+1. Add `POST /auth/login/`, `POST /auth/logout/`, and `GET /auth/session/` endpoints.
+2. Require authentication for every `/projects/` endpoint; unauthenticated API requests must return `401 Unauthorized`.
+3. Configure credentialed CORS and CSRF protection for the approved React development origin. Never allow arbitrary origins.
+4. Add a separate frontend authentication service and send session cookies with API requests.
+5. Add a sign-in page, session-check loading state, sign-out action, and clear invalid-credential/session-expired messages.
+6. Keep CRUD, validation, search, filters, and sorting working unchanged for signed-in users.
+7. Add backend and frontend automated tests for protected access, login, logout, and authentication failure states.
+8. Update README, DevOps Guide, API Testing Guide, Technical Overview, and Project Progress with only the implemented behavior.
 
 ## Exit Criteria
 
@@ -1592,6 +1613,8 @@ Add simple, secure access control so project data is available only to authentic
 [ ] Signed-in users can use the existing project-management features
 [ ] Sign-out ends access cleanly
 [ ] Authentication failures are understandable
+[ ] Session cookies, CSRF, and allowed origins are configured restrictively
+[ ] Authentication tests pass
 ```
 
 ## Scope note
@@ -1600,7 +1623,113 @@ Authentication is optional. Do not add Docker, deployment, Swagger/OpenAPI, or C
 
 ---
 
-# PHASE 25 — Security Review
+# PHASE 25 — Security Hardening and Secure Coding Review
+
+## Goal
+
+Harden the authenticated application using practical secure-coding controls. Use the CIA triad as the outcome model and the OWASP Top 10 as a review checklist; do not claim formal certification or attempt to implement every OWASP category when it is not relevant to this small application.
+
+## CIA triad
+
+### Confidentiality
+
+- Require authenticated access to project data.
+- Keep secrets in ignored environment files; never expose them in React builds, logs, tests, or documentation.
+- Use restrictive CORS, credentialed requests only where needed, secure cookie settings, and HTTPS-oriented production settings.
+
+### Integrity
+
+- Keep server-side validation authoritative for all project writes.
+- Use Django ORM and serializers; never build SQL from request input.
+- Enforce CSRF protection for cookie-authenticated state-changing requests.
+- Protect authentication and project endpoints with clear permission rules and test them.
+
+### Availability
+
+- Preserve safe error handling: user-facing messages must not expose stack traces or secrets.
+- Add reasonable request protection where supported by the chosen stack, such as login throttling, without weakening legitimate use.
+- Keep automated tests and dependency checks runnable so regressions are detected before release.
+
+## OWASP Top 10 review tasks
+
+Review and address applicable risks:
+
+```text
+[ ] Broken Access Control — all project routes require authentication and authorization rules are tested
+[ ] Cryptographic Failures — secrets are excluded, HTTPS/cookie settings are documented for production
+[ ] Injection — ORM/serializer validation is retained; no unsafe raw queries or shell input handling
+[ ] Insecure Design — authentication, session expiry, sign-out, and error behavior are deliberate and documented
+[ ] Security Misconfiguration — DEBUG, ALLOWED_HOSTS, CORS, CSRF, cookies, and error responses are restrictive
+[ ] Vulnerable Components — review dependency advisories and update only when verification passes
+[ ] Identification and Authentication Failures — use Django password hashing, CSRF, session rotation, and login throttling
+[ ] Software and Data Integrity Failures — install dependencies from lockfiles/requirements and avoid unreviewed runtime code
+[ ] Security Logging and Monitoring Failures — record security-relevant server events without recording passwords, tokens, or secrets
+[ ] SSRF — do not add server-side URL fetching without explicit validation and a real requirement
+```
+
+## Frontend tasks
+
+1. Do not store credentials or session tokens in local storage, session storage, URLs, or application state beyond the current session identity.
+2. Use the environment-configured API origin only; do not accept API URLs from user input.
+3. Render backend data as text through React; do not introduce unsafe HTML rendering.
+4. Handle `401`, `403`, validation, and server failures with clear messages that do not disclose sensitive details.
+5. Verify labels, focus flow, and sign-out behavior remain usable and accessible.
+
+## Backend tasks
+
+1. Review production Django settings: `DEBUG`, `ALLOWED_HOSTS`, secure cookies, `SECURE_SSL_REDIRECT`, HSTS, and trusted CSRF origins.
+2. Keep CORS allowlists minimal and enable credentials only for explicit origins.
+3. Configure secure session and CSRF cookie behavior appropriate for local development and production.
+4. Add rate limiting or throttling to sign-in attempts using a maintained, appropriate solution.
+5. Ensure logs contain useful security events but never passwords, session identifiers, database credentials, or Django secret keys.
+6. Add regression tests for unauthorized and forbidden behavior, CSRF protection, validation, and safe error responses.
+
+## Exit Criteria
+
+```text
+[ ] CIA triad controls are implemented and documented proportionately
+[ ] Applicable OWASP Top 10 risks are reviewed with evidence
+[ ] No secrets are tracked or exposed in client-side code
+[ ] Authentication, CORS, CSRF, validation, and error handling have automated coverage
+[ ] Backend tests, frontend tests, lint, and production build pass
+```
+
+---
+
+# PHASE 26 — Minor Revision and Experience Polish
+
+## Goal
+
+Make small, evidence-based improvements after all functional and security work is stable. This phase is for refinement, not a redesign or new scope.
+
+## Revision areas
+
+1. **Workflow:** remove unnecessary steps, clarify empty/loading/error/success states, and make primary actions easy to find.
+2. **UI:** refine layout, spacing, typography, card hierarchy, controls, responsive behavior, and interaction feedback.
+3. **Color:** review the current palette for contrast, semantic meaning, consistency, and brand fit. The palette remains adjustable in future iterations.
+4. **UX:** apply CRAP principles, keyboard access, focus visibility, readable labels, predictable controls, and clear confirmation/error language.
+
+## Process
+
+1. Collect specific observations from manual testing or reviewer feedback.
+2. Record the problem, proposed small change, and expected user benefit before editing.
+3. Preserve API contracts, security controls, and required CRUD behavior.
+4. Verify changed workflows manually and rerun automated tests, lint, and build.
+5. Update the UI/UX guide and project progress only for changes actually implemented.
+
+## Exit Criteria
+
+```text
+[ ] Revisions are traceable to a concrete usability or visual observation
+[ ] Required CRUD and authenticated access still work
+[ ] Color contrast and keyboard focus remain accessible
+[ ] UI is responsive at narrow and wide viewport sizes
+[ ] Automated tests, lint, build, and targeted manual checks pass
+```
+
+---
+
+# PHASE 27 — Security Review
 
 Before submission, inspect the repository as a secure software engineer.
 
@@ -1621,7 +1750,7 @@ Check:
 
 ---
 
-# PHASE 26 — Fresh Clone Test
+# PHASE 28 — Fresh Clone Test
 
 ## Goal
 
@@ -1667,7 +1796,7 @@ If any undocumented step is required, update the README.
 
 ---
 
-# PHASE 27 — Technical Reflection Preparation
+# PHASE 29 — Technical Reflection Preparation
 
 Prepare truthful answers based on the actual implementation.
 
@@ -1703,7 +1832,7 @@ Do not fabricate complexity that was not actually implemented.
 
 ---
 
-# PHASE 28 — Final Submission Review
+# PHASE 30 — Final Submission Review
 
 ## Core
 
@@ -1816,7 +1945,13 @@ These are the preferred bonus targets.
 
 ## P3 — Polish
 
-No additional bonus work is planned. Docker and deployment are intentionally out of scope for this assessment.
+```text
+Security hardening and secure-coding review
+Minor workflow, UI, color, and UX revisions
+Fresh-clone and final submission review
+```
+
+Docker and deployment are intentionally out of scope for this assessment.
 
 Only implement after P0, P1, and desired P2 work are stable.
 
@@ -1849,20 +1984,20 @@ Core application plus documentation and repository quality.
 Complete through:
 
 ```text
-Phase 22
+Phase 23
 ```
 
-Core application plus useful user-facing bonus features and backend tests.
+Core application plus user-facing bonus features and backend/frontend automated tests.
 
 ## Exceptional Polish
 
 Complete selected items from:
 
 ```text
-Phases 23–24
+Phases 24–26
 ```
 
-Only when they are stable.
+Only when authentication, security hardening, and revisions can be thoroughly verified.
 
 ---
 
