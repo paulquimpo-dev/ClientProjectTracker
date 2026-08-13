@@ -56,7 +56,7 @@ npm run dev
 
 Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. Press `Ctrl+C` in either terminal to stop that development server.
 
-`VITE_API_BASE_URL` defaults to `http://127.0.0.1:8000/api`. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` so either local Vite address can reach the API.
+Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `http://127.0.0.1:8000/api`. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` so either local Vite address can reach the API.
 
 ## Testing
 
@@ -81,6 +81,7 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 - Validate names, allowed status/priority values, and delivery dates
 - Display loading, empty, success, and friendly error states
 - Search loaded projects by client or project name
+- Filter loaded projects by status and priority
 - Load repeatable demonstration data with `python manage.py seed_projects`
 
 ## API and validation

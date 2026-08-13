@@ -14,12 +14,13 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api').replace(
-  /\/$/,
-  '',
-)
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  if (!apiBaseUrl) {
+    throw new ApiError('Project service is not configured. Set VITE_API_BASE_URL and restart the frontend.', 0)
+  }
+
   let response: Response
 
   try {

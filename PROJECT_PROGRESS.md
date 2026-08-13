@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 18 - Bonus: Search
+**Completed phase:** Phase 20 - Bonus: Priority Filter
 
-**Next phase:** Phase 19 - Bonus: Status Filter
+**Next phase:** Phase 21 - Bonus: Sorting
 
 ## Phase status
 
@@ -31,7 +31,9 @@ This tracker records implementation progress against the [development blueprint]
 | 16. Core README | Complete | Root and supporting documentation now cover architecture, setup, frontend operation, API, validation, testing, security, and AI use. |
 | 17. Core Git / Repository Review | Complete | Repository hygiene, ignored local artifacts, unused starter assets, tracked-file safety, documentation links, and commit history were reviewed. |
 | 18. Bonus: Search | Complete | Client-side, case-insensitive search filters loaded projects by client name and project name without changing backend behavior. |
-| 19-31. Bonus and Submission Work | Not started | Status/priority filters, sorting, tests, and submission polish remain. |
+| 19. Bonus: Status Filter | Complete | Client-side status filtering works alongside search and preserves the existing CRUD flows. |
+| 20. Bonus: Priority Filter | Complete | Client-side priority filtering combines with search and status filtering using clear all-values defaults. |
+| 21-31. Bonus and Submission Work | Not started | Sorting, tests, and submission polish remain. |
 
 ## Verification record
 
@@ -181,9 +183,18 @@ This tracker records implementation progress against the [development blueprint]
 - A clear no-match state appears when the search has no results; the existing empty-project state remains distinct.
 - Frontend linting and production build passed.
 
+### Phases 19–20
+
+- Added accessible Status and Priority select controls with All Statuses and All Priorities defaults.
+- Search, status, and priority criteria combine predictably: displayed projects must meet every active criterion.
+- Filters run against the existing loaded data and make no additional API calls.
+- The no-match state now guides users to adjust their search or filters.
+- The controls use responsive layout and retain existing create, edit, and delete behavior.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- The required core application, documentation, and repository review are complete. Search is implemented; the remaining bonus work begins with Phase 19.
+- The required core application, documentation, and repository review are complete. Search and status/priority filters are implemented; the remaining bonus work begins with Phase 21.
 
 ## Update convention
 

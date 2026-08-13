@@ -141,7 +141,7 @@ npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads `VITE_API_BASE_URL` from `frontend/.env`; it defaults to `http://127.0.0.1:8000/api` when unset.
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000/api` for local development.
 
 ## Load demonstration data
 

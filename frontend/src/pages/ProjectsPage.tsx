@@ -4,7 +4,14 @@ import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ProjectForm } from '../components/ProjectForm'
 import { ProjectList } from '../components/ProjectList'
 import { ApiError, createProject, deleteProject, getProjects, updateProject } from '../services/projectService'
-import type { Project, ProjectInput } from '../types/project'
+import {
+  PROJECT_PRIORITIES,
+  PROJECT_STATUSES,
+  type Project,
+  type ProjectInput,
+  type ProjectPriority,
+  type ProjectStatus,
+} from '../types/project'
 
 type LoadState = 'loading' | 'success' | 'error'
 
@@ -18,18 +25,21 @@ export function ProjectsPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<ProjectStatus | 'all'>('all')
+  const [priorityFilter, setPriorityFilter] = useState<ProjectPriority | 'all'>('all')
 
   const filteredProjects = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase()
 
-    if (!query) return projects
-
     return projects.filter((project) =>
-      [project.clientName, project.projectName].some((value) =>
-        value.toLocaleLowerCase().includes(query),
-      ),
+      (query === '' ||
+        [project.clientName, project.projectName].some((value) =>
+          value.toLocaleLowerCase().includes(query),
+        )) &&
+      (statusFilter === 'all' || project.status === statusFilter) &&
+      (priorityFilter === 'all' || project.priority === priorityFilter),
     )
-  }, [projects, searchQuery])
+  }, [priorityFilter, projects, searchQuery, statusFilter])
 
   const loadProjects = useCallback(async () => {
     setLoadState('loading')
@@ -102,7 +112,8 @@ export function ProjectsPage() {
         </button>
       </header>
 
-      <div className="project-search">
+      <div className="project-controls" aria-label="Project search and filters">
+        <div className="project-search">
         <label htmlFor="project-search">Search projects</label>
         <div className="project-search__input-wrap">
           <span aria-hidden="true">⌕</span>
@@ -113,6 +124,31 @@ export function ProjectsPage() {
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by client or project name"
           />
+        </div>
+        </div>
+
+        <div className="project-filter">
+          <label htmlFor="status-filter">Status</label>
+          <select
+            id="status-filter"
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value as ProjectStatus | 'all')}
+          >
+            <option value="all">All statuses</option>
+            {PROJECT_STATUSES.map((status) => <option key={status}>{status}</option>)}
+          </select>
+        </div>
+
+        <div className="project-filter">
+          <label htmlFor="priority-filter">Priority</label>
+          <select
+            id="priority-filter"
+            value={priorityFilter}
+            onChange={(event) => setPriorityFilter(event.target.value as ProjectPriority | 'all')}
+          >
+            <option value="all">All priorities</option>
+            {PROJECT_PRIORITIES.map((priority) => <option key={priority}>{priority}</option>)}
+          </select>
         </div>
       </div>
 
@@ -180,7 +216,7 @@ export function ProjectsPage() {
       {loadState === 'success' && projects.length > 0 && filteredProjects.length === 0 ? (
         <section className="state-message">
           <h2>No matching projects found.</h2>
-          <p>Try a different client or project name.</p>
+          <p>Try changing your search or filters.</p>
         </section>
       ) : null}
 
