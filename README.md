@@ -54,37 +54,30 @@ Django REST Framework
 
 ## Quick start
 
-Prerequisites: Git, Python 3.12+, and PostgreSQL.
+Prerequisites: Git, Python 3.12+, PostgreSQL, Node.js 22+, and npm.
+
+Clone and configure the project once:
 
 ```powershell
 git clone <repository-url>
 cd ClientProjectTracker
 Copy-Item .env.example .env
+
 cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_projects
-python manage.py runserver
-```
 
-Before running the backend, update `.env` with a unique `DJANGO_SECRET_KEY` and valid local PostgreSQL credentials. The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the project API is available at `/api/projects/`.
-
-For database provisioning, macOS/Linux commands, verification, troubleshooting, and repository update instructions, read the [DevOps Guide](docs/DEVOPS_GUIDE.md).
-
-### Frontend
-
-In a second terminal, start the Vite development server:
-
-```powershell
-cd frontend
+cd ../frontend
 Copy-Item .env.example .env
 npm install
-npm run dev
 ```
 
-The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The list, create, edit, and confirmed-delete flows are available.
+Before running the application, update the root `.env` with a unique `DJANGO_SECRET_KEY` and valid local PostgreSQL credentials. The frontend `.env` can retain the provided local API URL unless your backend runs elsewhere.
+
+For database provisioning, macOS/Linux commands, verification, troubleshooting, and repository update instructions, read the [DevOps Guide](docs/DEVOPS_GUIDE.md).
 
 ## How to run
 
@@ -112,6 +105,8 @@ npm run dev
 Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. The frontend will load projects from the Django API.
 
 Press `Ctrl+C` in either terminal to stop its development server.
+
+`VITE_API_BASE_URL` defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API.
 
 ## API and validation
 
