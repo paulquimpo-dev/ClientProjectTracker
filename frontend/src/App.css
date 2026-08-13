@@ -20,3 +20,8 @@
 .api-status {
   margin-top: 2rem;
 }
+
+.connection-status {
+  margin-top: 1rem;
+  font-weight: 600;
+}

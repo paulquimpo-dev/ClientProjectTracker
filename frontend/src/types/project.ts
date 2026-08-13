@@ -22,3 +22,5 @@ export interface Project {
   created_at: string
   updated_at: string
 }
+
+export type ProjectInput = Omit<Project, 'id' | 'created_at' | 'updated_at'>

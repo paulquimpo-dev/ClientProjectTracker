@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 7 - React + TypeScript Foundation
+**Completed phase:** Phase 8 - API Service Layer
 
-**Next phase:** Phase 8 - API Service Layer
+**Next phase:** Phase 9 - Project Listing
 
 ## Phase status
 
@@ -20,7 +20,8 @@ This tracker records implementation progress against the [development blueprint]
 | 5. Seed / Test Data | Complete | Six approved local demo projects can be loaded repeatably without duplicates. |
 | 6. Backend Core Completion Gate | Complete | Full backend, database, API, dependency, security, and repository audit passed. |
 | 7. React + TypeScript Foundation | Complete | Vite React TypeScript app, frontend source structure, Project types, configurable API base URL, and application shell are in place. |
-| 8-17. Frontend and Core Completion | Not started | API service, CRUD interface, regression testing, documentation, and repository review. |
+| 8. API Service Layer | Complete | Typed Project API client functions, friendly API errors, runtime connection status, and configurable API base URL are implemented. |
+| 9-17. Frontend and Core Completion | Not started | Project listing, CRUD interface, regression testing, documentation, and repository review. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -84,9 +85,18 @@ This tracker records implementation progress against the [development blueprint]
 - Replaced the Vite demo with a minimal Client Project Tracker application shell.
 - Frontend linting and the production build passed successfully.
 
+### Phase 8
+
+- Added a reusable typed Project API client with functions for list, retrieve, create, update, and delete operations.
+- Centralized JSON handling and user-friendly network, validation, and missing-record errors in `ApiError`.
+- The foundation shell now verifies the API connection and displays the available project count without implementing the project-list UI.
+- The live projects endpoint returned `200` with six seeded projects.
+- CORS preflight checks passed for both `localhost:5173` and `127.0.0.1:5173`.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- The frontend is a foundation shell only; it does not yet call the API or display projects.
+- The frontend verifies its API connection but does not yet display project data as a list.
 
 ## Update convention
 
