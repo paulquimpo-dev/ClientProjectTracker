@@ -1,36 +1,23 @@
-# API Manual Testing Guide
+# API Testing Guide
 
-Use this guide to verify the protected project API with curl or Postman. Project endpoints require an authenticated Django session and CSRF protection for state-changing requests.
+Use this guide to manually verify authentication, CRUD, and validation with PowerShell `curl.exe`. The API requires a signed-in Django session and CSRF protection for `POST`, `PUT`, and `DELETE` requests.
 
-## Before testing
+## 1. Prepare the API
 
-Create a regular local user once, then start Django:
+From `backend/`, activate the virtual environment, migrate the database, create a regular user if needed, and start the server. Full setup instructions are in the [root README](../README.md).
 
 ```powershell
 cd backend
 .\.venv\Scripts\Activate.ps1
 python manage.py migrate
-python manage.py shell
-```
-
-```python
-from getpass import getpass
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-User.objects.create_user(username=input("Username: ").strip(), password=getpass("Password: "))
-exit()
-```
-
-```powershell
 python manage.py runserver
 ```
 
-Keep the server terminal open. The project API is `http://127.0.0.1:8000/projects/`.
+Keep the server running. The API base URL is `http://127.0.0.1:8000`.
 
-## curl tests
+## 2. Prepare a temporary cookie jar
 
-The examples use `curl.exe` and a temporary cookie jar. Replace `project-manager` and `your-password` with the regular account created above.
+Replace `project-manager` and `your-password` below with your regular account credentials.
 
 ```powershell
 $cookieJar = Join-Path $env:TEMP 'client-project-tracker-cookies.txt'
@@ -38,12 +25,14 @@ Remove-Item $cookieJar -ErrorAction Ignore
 
 function Get-CsrfToken {
   param([string]$CookieJar)
-  $cookieLine = Get-Content $CookieJar | Where-Object { $_ -match '(^|\t)csrftoken\t' } | Select-Object -Last 1
-  return ($cookieLine -split "`t")[-1]
+  $line = Get-Content $CookieJar | Where-Object { $_ -match '(^|\t)csrftoken\t' } | Select-Object -Last 1
+  return ($line -split "`t")[-1]
 }
 ```
 
-### 1. Verify anonymous access is denied
+## 3. Verify authentication
+
+Anonymous project access must be denied:
 
 ```powershell
 curl.exe -i http://127.0.0.1:8000/projects/
@@ -51,10 +40,10 @@ curl.exe -i http://127.0.0.1:8000/projects/
 
 Expected: `401 Unauthorized`.
 
-### 2. Obtain a CSRF cookie and sign in
+Obtain a CSRF cookie and sign in:
 
 ```powershell
-curl.exe -i -c $cookieJar http://127.0.0.1:8000/auth/csrf/
+curl.exe -c $cookieJar http://127.0.0.1:8000/auth/csrf/
 $csrfToken = Get-CsrfToken $cookieJar
 
 @'
@@ -64,64 +53,53 @@ $csrfToken = Get-CsrfToken $cookieJar
 $csrfToken = Get-CsrfToken $cookieJar
 ```
 
-Expected: `200 OK` and the signed-in user's ID and username. Do not commit, share, or save the cookie jar.
+Expected: `200 OK` and a user object.
 
-### 3. List projects
+## 4. Verify CRUD
+
+List projects:
 
 ```powershell
 curl.exe -i -b $cookieJar http://127.0.0.1:8000/projects/
 ```
 
-Expected: `200 OK` and a JSON array.
-
-### 4. Create a valid project
+Create a project and note the returned `id`:
 
 ```powershell
 @'
-{"clientName":"Mabuhay Digital Solutions","projectName":"Customer Support Portal","description":"Build a customer support portal for service requests and status tracking.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
+{"clientName":"Demo Client","projectName":"Manual API Test","description":"Temporary verification record.","status":"Planning","priority":"High","startDate":"2026-08-20","dueDate":"2026-10-15"}
 '@ | curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
 ```
 
-Expected: `201 Created`. Record the returned numeric `id` and use it below.
+Replace `<id>` with that ID to retrieve, update, then delete the temporary project:
 
-### 5. Reject invalid data
+```powershell
+curl.exe -i -b $cookieJar http://127.0.0.1:8000/projects/<id>/
+
+@'
+{"clientName":"Demo Client","projectName":"Updated Manual API Test","description":"Updated temporary record.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
+'@ | curl.exe -i -b $cookieJar -X PUT http://127.0.0.1:8000/projects/<id>/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
+
+curl.exe -i -b $cookieJar -X DELETE http://127.0.0.1:8000/projects/<id>/ -H "X-CSRFToken: $csrfToken"
+```
+
+Expected: `200`, `201`, `200`, and `204` respectively.
+
+## 5. Verify validation
 
 ```powershell
 @'
-{"clientName":" ","projectName":"Invalid Portal","description":"This record should be rejected.","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
+{"clientName":" ","projectName":"Invalid Record","description":"This must fail.","status":"Planning","priority":"High","startDate":"2026-10-15","dueDate":"2026-08-20"}
 '@ | curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/projects/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
 ```
 
 Expected: `400 Bad Request` with meaningful `clientName` and/or `dueDate` errors.
 
-### 6. Update and delete a project
-
-Replace `1` with the created project ID.
-
-```powershell
-@'
-{"clientName":"Mabuhay Digital Solutions","projectName":"Updated Customer Support Portal","description":"Expanded scope.","status":"In Progress","priority":"Medium","startDate":"2026-08-20","dueDate":"2026-10-15"}
-'@ | curl.exe -i -b $cookieJar -X PUT http://127.0.0.1:8000/projects/1/ -H "Content-Type: application/json" -H "X-CSRFToken: $csrfToken" --data-binary "@-"
-
-curl.exe -i -b $cookieJar -X DELETE http://127.0.0.1:8000/projects/1/ -H "X-CSRFToken: $csrfToken"
-```
-
-Expected: `200 OK` for the update and `204 No Content` for deletion.
-
-### 7. Sign out and clean up
+## 6. Sign out and clean up
 
 ```powershell
 curl.exe -i -b $cookieJar -X POST http://127.0.0.1:8000/auth/logout/ -H "X-CSRFToken: $csrfToken"
 Remove-Item $cookieJar -ErrorAction Ignore
 ```
 
-Expected: `204 No Content`. A subsequent request to `/projects/` should again return `401 Unauthorized`.
-
-## Postman tests
-
-1. Send `GET http://127.0.0.1:8000/auth/csrf/` first; Postman stores the `csrftoken` cookie.
-2. Send `POST http://127.0.0.1:8000/auth/login/` with JSON credentials and header `X-CSRFToken` set to the `csrftoken` cookie value.
-3. For `POST`, `PUT`, `DELETE`, send the session cookies and the current `X-CSRFToken` header. Postman manages cookies automatically for the same host.
-4. Verify `GET /projects/` is `401` before login, `200` after login, and `401` again after `POST /auth/logout/`.
-
-Never place a real password, session cookie, or CSRF token in a saved collection or repository file.
+Expected: `204 No Content`. Never commit or share passwords, cookies, or CSRF tokens.

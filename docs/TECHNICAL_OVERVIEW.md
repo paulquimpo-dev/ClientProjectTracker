@@ -1,111 +1,77 @@
 # Technical Overview
 
+This document explains the main technical decisions behind the Client Project Tracker.
+
 ## Architecture
 
 ```text
-React + TypeScript frontend
-             |
-          REST/JSON
-             |
-Django REST Framework backend
-             |
-        Django ORM
-             |
-        PostgreSQL
+React + TypeScript UI
+        |
+  Typed API service
+        |
+Django REST Framework
+        |
+ Django ORM + PostgreSQL
 ```
 
-The frontend calls a typed API service layer. Backend requests flow through URL routing, Django REST Framework views, serializers, models, and PostgreSQL.
+React components use a shared service layer for API requests. Django REST Framework routes requests through serializers and models, while Django's ORM persists data in PostgreSQL.
 
-## Repository structure
+## Main structure
 
 ```text
 ClientProjectTracker/
-|-- backend/
-|   |-- config/                 # Django settings and root URLs
-|   |-- projects/               # Model, migration, admin, and serializer
-|   |   `-- management/commands/# Local seed command
-|   |-- manage.py
-|   `-- requirements.txt
-|-- frontend/                   # React UI, API service, components, pages, and types
-|-- docs/                       # Extended project documentation
-|-- .env.example                # Safe configuration template
-`-- README.md
+|-- backend/        # Django settings, authentication, projects, migrations, seed command
+|-- frontend/       # React pages, components, services, and TypeScript types
+|-- docs/           # Setup, API testing, and technical documentation
+|-- .env.example    # Safe local configuration template
+`-- README.md       # Primary setup and submission guide
 ```
 
-## REST API
-
-Phase 4 implements the required CRUD API.
+## API
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | `GET` | `/projects/` | List projects |
-| `GET` | `/projects/{id}/` | Retrieve one project |
+| `GET` | `/projects/{id}/` | Get one project |
 | `POST` | `/projects/` | Create a project |
 | `PUT` | `/projects/{id}/` | Update a project |
 | `DELETE` | `/projects/{id}/` | Delete a project |
 
-The external API uses camelCase fields such as `clientName`, `projectName`, `startDate`, and `dueDate`. The serializer maps these fields to Django's internal snake_case model fields.
+The external API uses camelCase fields such as `clientName`, `projectName`, `startDate`, and `dueDate`. The Django serializer maps them to internal snake_case model fields.
 
-The API returns `200` for successful reads and updates, `201` for creation, `204` for deletion, `400` for invalid input, `401` for missing/invalid authentication, `403` for failed CSRF verification, `404` for missing projects, and `429` for throttled sign-in attempts. See the [API Testing Guide](API_TESTING_GUIDE.md) for repeatable manual checks.
+## Validation and errors
 
-## Authentication
+The backend is authoritative. It requires client and project names, enforces the allowed status and priority values, and rejects a due date earlier than its start date. The frontend repeats the essential checks for immediate feedback, then displays backend field errors when a request is rejected.
 
-The application uses Django's built-in `User` model, password hashing, and server-managed sessions. React never stores a password or reusable access token. The browser sends the `HttpOnly` session cookie with credentialed API requests, while a separate CSRF cookie/token protects state-changing requests. `/projects/` requires authentication and returns `401` when no valid session exists. The frontend uses `GET /auth/session/` to choose between the sign-in screen and the project tracker; `POST /auth/login/` and `POST /auth/logout/` start and end the server-side session.
+The API returns standard JSON responses: `200` for reads/updates, `201` for creation, `204` for deletion, `400` for invalid input, `401` for unauthenticated requests, `403` for failed CSRF verification, `404` for missing projects, and `429` for throttled sign-in attempts.
 
-## Security hardening
+## Authentication and security
 
-Phase 25 applies practical controls guided by the CIA triad and applicable OWASP Top 10 risks. Confidentiality is supported by protected routes, password hashing, `HttpOnly` sessions, origin allowlists, and no credential/token persistence in React. Integrity is supported by Django serializers, ORM use, CSRF protection, session rotation at login, and API authorization tests. Availability is supported by safe JSON failure responses, a five-attempt-per-15-minute login throttle, regression tests, and dependency checks. Production mode requires explicit allowed hosts, HTTPS redirect/HSTS settings, and secure cookies; local HTTP retains `DJANGO_COOKIE_SECURE=False` only through ignored local environment configuration.
+- Django's built-in user model hashes passwords.
+- Server-managed `HttpOnly`, `SameSite=Lax` session cookies authenticate requests.
+- React does not store passwords or reusable access tokens.
+- CSRF protection applies to all state-changing requests.
+- CORS and CSRF trust use explicit origins, not wildcards.
+- Five failed sign-in attempts for the same IP address and username are throttled for 15 minutes.
+- Django serializers and the ORM protect validation and database access.
+- Production requires `DJANGO_DEBUG=False`, explicit allowed hosts, HTTPS, secure cookies, and a fresh strong `DJANGO_SECRET_KEY`.
 
-## Automated testing
+## Frontend design
 
-The Django test suite covers required CRUD behavior, validation rules, missing-resource responses, and the `/projects/` route contract. The frontend uses Vitest and React Testing Library to cover project-card rendering/actions and the environment-configured API service, including validation-error handling. Run `python manage.py test` from `backend/` and `npm run test` from `frontend/`.
+`ProjectsPage` owns page state. Reusable components render project cards, status/priority badges, project forms, confirmation dialogs, and accessible modal workflows. The API client centralizes the environment-configured base URL, session cookies, CSRF handling, and safe error mapping.
 
-## Validation rules
+## Testing
 
-The backend is the authoritative validation layer. It currently enforces:
+- Django tests cover CRUD, validation, authentication, CSRF handling, throttling, CORS, and seed-command repeatability.
+- Vitest and React Testing Library cover UI components, authentication behavior, and the API service layer.
+- The current seed command creates or synchronizes 12 demo projects without deleting unrelated records.
 
-- Client and project names are required and cannot contain only whitespace.
-- Status must be `Planning`, `In Progress`, `On Hold`, or `Completed`.
-- Priority must be `Low`, `Medium`, or `High`.
-- Start and due dates are required.
-- The due date cannot be earlier than the start date.
+## AI use
 
-## Frontend
+OpenAI Codex assisted with planning, implementation scaffolding, debugging, documentation, UI refinement, and verification guidance. The developer reviewed the code and remains responsible for the implementation, configuration, testing, and submission.
 
-The React UI is organized by responsibility:
+## Related guides
 
-- `pages/ProjectsPage.tsx` owns list/create/edit/delete screen state.
-- `components/` contains reusable project cards, badges, the ProjectForm, and delete confirmation.
-- `services/projectService.ts` centralizes typed HTTP requests and API error handling.
-- `types/project.ts` mirrors the camelCase API contract.
-
-The UI supports responsive project listing, create/edit forms, delete confirmation, client-side validation, backend field errors, and loading/empty/failure states.
-
-## Demonstration data
-
-`python manage.py seed_projects` loads twelve fictional client projects. Client and project names identify each seed record. Repeated runs avoid duplicates and synchronize the approved seed values without deleting unrelated projects.
-
-## Configuration and security
-
-- `.env`, `backend/.env`, and `backend/.venv/` are ignored by Git.
-- Database credentials and the Django secret are loaded from environment variables.
-- Local development uses `DJANGO_DEBUG=True`; production must use `False`.
-- Production requires a unique secret, restricted allowed hosts and origins, and managed database credentials.
-- CORS uses explicit origins rather than a wildcard.
-- Database access uses Django's ORM.
-
-## AI-assisted development
-
-This project was developed with assistance from OpenAI Codex. It was used for:
-
-- Planning implementation work against the development blueprint
-- Scaffolding and reviewing code
-- Writing and improving documentation
-- Suggesting validation and verification steps
-- Assisting with debugging and code-quality checks
-
-All AI-assisted output is reviewed by the developer before acceptance. Implementation decisions, final code, configuration, testing, and submission responsibility remain with the developer. Open-source frameworks and libraries are identified in the root README and dependency files.
-
-## Related documents
-
+- [Root README](../README.md)
 - [DevOps Guide](DEVOPS_GUIDE.md)
+- [API Testing Guide](API_TESTING_GUIDE.md)
