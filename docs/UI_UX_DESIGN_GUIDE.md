@@ -96,6 +96,17 @@ Use clear hierarchy:
 - On narrow screens, stack card content and keep actions comfortably tappable.
 - Use one primary action per screen. For the projects page, this will be **New Project**.
 
+## CRAP principles in the interface
+
+The project list applies the CRAP principles of visual design:
+
+| Principle | Application |
+| --- | --- |
+| Contrast | Royal Blue and Indigo establish hierarchy; semantic badge colors make status and priority distinguishable; cards contrast with the pale workspace. |
+| Repetition | Cards, badges, buttons, spacing, borders, and metadata formatting repeat predictably across every project. |
+| Alignment | Headers, card content, footer details, and actions use consistent left/right alignment on larger screens and stack intentionally on small screens. |
+| Proximity | Client/project identity, status/priority, and dates/actions are grouped by their relationship so users can scan each record quickly. |
+
 ## Required experience states
 
 Every data-dependent screen must explain its state clearly:

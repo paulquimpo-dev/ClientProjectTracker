@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 8 - API Service Layer
+**Completed phase:** Phase 9 - Project Listing
 
-**Next phase:** Phase 9 - Project Listing
+**Next phase:** Phase 10 - Create Project
 
 ## Phase status
 
@@ -21,7 +21,8 @@ This tracker records implementation progress against the [development blueprint]
 | 6. Backend Core Completion Gate | Complete | Full backend, database, API, dependency, security, and repository audit passed. |
 | 7. React + TypeScript Foundation | Complete | Vite React TypeScript app, frontend source structure, Project types, configurable API base URL, and application shell are in place. |
 | 8. API Service Layer | Complete | Typed Project API client functions, friendly API errors, runtime connection status, and configurable API base URL are implemented. |
-| 9-17. Frontend and Core Completion | Not started | Project listing, CRUD interface, regression testing, documentation, and repository review. |
+| 9. Project Listing | Complete | Responsive project cards, reusable status/priority badges, and loading, empty, and API-error states are implemented using the Phase 8 API service. |
+| 10-17. Frontend and Core Completion | Not started | Create/edit/delete interface, regression testing, documentation, and repository review. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -94,9 +95,19 @@ This tracker records implementation progress against the [development blueprint]
 - CORS preflight checks passed for both `localhost:5173` and `127.0.0.1:5173`.
 - Frontend linting and production build passed.
 
+### Phase 9
+
+- Added the Projects page, ProjectList, ProjectCard, StatusBadge, and PriorityBadge components.
+- Projects are retrieved through the shared API service and displayed as responsive, readable cards.
+- Loading, empty, and API-failure states are explicit and user-friendly; the failure state includes a retry action.
+- Project cards display the required client name, project name, description, status, priority, start date, and due date.
+- New Project, Edit, and Delete controls are visible but intentionally disabled until Phases 10–12 add their behavior.
+- The implementation applies the documented CRAP principles for contrast, repetition, alignment, and proximity.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- The frontend verifies its API connection but does not yet display project data as a list.
+- Project creation, editing, and deletion are not implemented yet.
 
 ## Update convention
 

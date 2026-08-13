@@ -4,7 +4,7 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-8 are complete:
+Phases 1-9 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
@@ -14,8 +14,9 @@ Phases 1-8 are complete:
 - Verified backend completion gate
 - React, TypeScript, and Vite frontend foundation
 - Typed frontend API service layer and verified backend connection
+- Responsive project listing with loading, empty, and API-error states
 
-The project-list UI, CRUD interface, and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+The create/edit/delete interface and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
@@ -58,7 +59,7 @@ npm install
 npm run dev
 ```
 
-The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The current shell confirms the connection and available project count; the visual list is added in Phase 9.
+The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The project list is available; create, edit, and delete controls follow in Phases 10–12.
 
 ## Documentation
 
@@ -77,5 +78,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- The frontend connects to the API but does not yet display projects as a list or provide CRUD controls.
+- The project list is implemented, but project creation, editing, and deletion are not available yet.
 - The backend test suite and seed data are implemented; frontend tests are planned for a later phase.
