@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 17 - Core Git / Repository Review
+**Completed phase:** Phase 18 - Bonus: Search
 
-**Next phase:** Phase 18 - Bonus: Search
+**Next phase:** Phase 19 - Bonus: Status Filter
 
 ## Phase status
 
@@ -30,7 +30,8 @@ This tracker records implementation progress against the [development blueprint]
 | 15. Core Regression Testing | Complete | Automated backend/API/build checks and user-confirmed browser regression passed for CRUD persistence, validation, API downtime, and recovery. |
 | 16. Core README | Complete | Root and supporting documentation now cover architecture, setup, frontend operation, API, validation, testing, security, and AI use. |
 | 17. Core Git / Repository Review | Complete | Repository hygiene, ignored local artifacts, unused starter assets, tracked-file safety, documentation links, and commit history were reviewed. |
-| 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
+| 18. Bonus: Search | Complete | Client-side, case-insensitive search filters loaded projects by client name and project name without changing backend behavior. |
+| 19-31. Bonus and Submission Work | Not started | Status/priority filters, sorting, tests, and submission polish remain. |
 
 ## Verification record
 
@@ -172,9 +173,17 @@ This tracker records implementation progress against the [development blueprint]
 - Removed four unused Vite demonstration assets and replaced stale starter documentation.
 - Documentation links, working-tree changes, and commit history were reviewed; `git diff --check` passes.
 
+### Phase 18
+
+- Added a responsive search control for client and project names.
+- Search filters the projects already loaded in React, so results update immediately without extra API calls.
+- Matching is case-insensitive and does not change create, edit, or delete behavior.
+- A clear no-match state appears when the search has no results; the existing empty-project state remains distinct.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- The required core application, documentation, and repository review are complete. Optional bonus work begins with Phase 18.
+- The required core application, documentation, and repository review are complete. Search is implemented; the remaining bonus work begins with Phase 19.
 
 ## Update convention
 

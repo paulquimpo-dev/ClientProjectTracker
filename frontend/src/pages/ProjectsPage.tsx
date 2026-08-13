@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ProjectForm } from '../components/ProjectForm'
@@ -17,6 +17,19 @@ export function ProjectsPage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredProjects = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase()
+
+    if (!query) return projects
+
+    return projects.filter((project) =>
+      [project.clientName, project.projectName].some((value) =>
+        value.toLocaleLowerCase().includes(query),
+      ),
+    )
+  }, [projects, searchQuery])
 
   const loadProjects = useCallback(async () => {
     setLoadState('loading')
@@ -89,6 +102,20 @@ export function ProjectsPage() {
         </button>
       </header>
 
+      <div className="project-search">
+        <label htmlFor="project-search">Search projects</label>
+        <div className="project-search__input-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input
+            id="project-search"
+            type="search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search by client or project name"
+          />
+        </div>
+      </div>
+
       {isCreating ? (
         <ProjectForm
           mode="create"
@@ -150,9 +177,16 @@ export function ProjectsPage() {
         </section>
       ) : null}
 
+      {loadState === 'success' && projects.length > 0 && filteredProjects.length === 0 ? (
+        <section className="state-message">
+          <h2>No matching projects found.</h2>
+          <p>Try a different client or project name.</p>
+        </section>
+      ) : null}
+
       {loadState === 'success' && projects.length > 0 ? (
         <ProjectList
-          projects={projects}
+          projects={filteredProjects}
           onEdit={(project) => { setEditingProject(project); setIsCreating(false); setSuccessMessage(null); setActionError(null) }}
           onDelete={(project) => { setDeletingProject(project); setSuccessMessage(null); setActionError(null) }}
         />

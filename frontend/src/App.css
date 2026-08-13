@@ -35,6 +35,45 @@
   color: var(--text-secondary);
 }
 
+.project-search {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 34rem;
+  margin: 0 0 2rem;
+}
+
+.project-search label {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 750;
+}
+
+.project-search__input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.project-search__input-wrap:focus-within {
+  border-color: var(--indigo);
+  outline: 3px solid rgb(148 123 211 / 0.3);
+}
+
+.project-search__input-wrap span { color: var(--text-secondary); font-size: 1.25rem; }
+
+.project-search input {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 0;
+  outline: 0;
+  color: var(--text-primary);
+  background: transparent;
+}
+
 .project-form-panel {
   margin: 0 0 2rem;
   padding: 1.5rem;

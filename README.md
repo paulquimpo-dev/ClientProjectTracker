@@ -80,6 +80,7 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 - Create, edit, and delete projects through the React interface
 - Validate names, allowed status/priority values, and delivery dates
 - Display loading, empty, success, and friendly error states
+- Search loaded projects by client or project name
 - Load repeatable demonstration data with `python manage.py seed_projects`
 
 ## API and validation
@@ -126,7 +127,7 @@ Django REST Framework
 
 ## Project status
 
-Phases 1–17 of the core blueprint are complete: backend CRUD, PostgreSQL persistence, React CRUD UI, frontend/backend validation, failure handling, regression testing, documentation, and repository review.
+Phases 1–17 of the core blueprint are complete, along with the Phase 18 client-side search bonus: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
 
 The required core is complete. Frontend automated tests and optional bonus features remain future improvements.
 
