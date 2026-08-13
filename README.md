@@ -4,13 +4,14 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-3 are complete:
+Phases 1-4 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
 - Serializer and backend validation
+- REST API with project CRUD operations
 
-REST CRUD endpoints, the React frontend, seed data, and the complete automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+The React frontend, seed data, and broader automated test suite are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
 
 ## Technology stack
 
@@ -37,7 +38,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Before running the backend, update `.env` with a unique `DJANGO_SECRET_KEY` and valid local PostgreSQL credentials. The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/). A `404` at `/` is expected until the API routes are added in Phase 4.
+Before running the backend, update `.env` with a unique `DJANGO_SECRET_KEY` and valid local PostgreSQL credentials. The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the project API is available at `/api/projects/`.
 
 For database provisioning, macOS/Linux commands, verification, troubleshooting, and repository update instructions, read the [DevOps Guide](docs/DEVOPS_GUIDE.md).
 
@@ -46,6 +47,7 @@ For database provisioning, macOS/Linux commands, verification, troubleshooting, 
 Extended project documentation is available in the [`docs/` directory](docs/README.md):
 
 - [DevOps Guide](docs/DEVOPS_GUIDE.md) - clone, configure, run, update, and troubleshoot the project
+- [API Testing Guide](docs/API_TESTING_GUIDE.md) - manually verify CRUD behavior with curl or Postman
 - [Technical Overview](docs/TECHNICAL_OVERVIEW.md) - architecture, repository structure, validation, security, and API plans
 - [Development Blueprint](KODA_FullStack_AI_IDE_Development_Blueprint.md) - complete phase-by-phase implementation plan
 - [Project Progress](PROJECT_PROGRESS.md) - verified phase status and next milestone
@@ -56,6 +58,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- Project API endpoints are not implemented yet.
 - The React frontend is not implemented yet.
 - Seed data and the complete automated test suite are not implemented yet.

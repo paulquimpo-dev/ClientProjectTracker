@@ -32,9 +32,9 @@ ClientProjectTracker/
 `-- README.md
 ```
 
-## API plan
+## REST API
 
-The CRUD API will be introduced in Phase 4.
+Phase 4 implements the required CRUD API.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
@@ -45,6 +45,8 @@ The CRUD API will be introduced in Phase 4.
 | `DELETE` | `/api/projects/{id}/` | Delete a project |
 
 The external API uses camelCase fields such as `clientName`, `projectName`, `startDate`, and `dueDate`. The serializer maps these fields to Django's internal snake_case model fields.
+
+The API returns `200` for successful reads and updates, `201` for creation, `204` for deletion, `400` for invalid input, and `404` for missing projects. See the [API Testing Guide](API_TESTING_GUIDE.md) for repeatable manual checks.
 
 ## Validation rules
 
