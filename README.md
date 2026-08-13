@@ -86,6 +86,33 @@ npm run dev
 
 The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The list, create, edit, and confirmed-delete flows are available.
 
+## How to run
+
+After completing the environment and dependency setup, use two terminals from the repository root.
+
+### Terminal 1 — Django API
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py migrate
+python manage.py seed_projects
+python manage.py runserver
+```
+
+The API will run at [http://127.0.0.1:8000/api/projects/](http://127.0.0.1:8000/api/projects/).
+
+### Terminal 2 — React frontend
+
+```powershell
+cd frontend
+npm run dev
+```
+
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. The frontend will load projects from the Django API.
+
+Press `Ctrl+C` in either terminal to stop its development server.
+
 ## API and validation
 
 | Method | Endpoint | Purpose |
