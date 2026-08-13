@@ -162,6 +162,10 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
       </header>
 
       <div className="project-controls" aria-label="Project search, filters, and sorting">
+        <div className="project-controls__heading">
+          <p>Find projects</p>
+          <span>Search, filter, or change the display order.</span>
+        </div>
         <div className="project-search">
         <label htmlFor="project-search">Search projects</label>
         <div className="project-search__input-wrap">

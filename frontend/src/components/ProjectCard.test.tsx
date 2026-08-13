@@ -29,8 +29,8 @@ test('renders project details and calls its actions', () => {
   expect(screen.getByText('High priority')).toBeInTheDocument()
   expect(screen.getByText(/Created/)).toBeInTheDocument()
 
-  fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
-  fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Edit Website Redesign' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Delete Website Redesign' }))
 
   expect(onEdit).toHaveBeenCalledWith(project)
   expect(onDelete).toHaveBeenCalledWith(project)

@@ -33,7 +33,7 @@ function formatTimestamp(timestamp: string): string {
 
 export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   return (
-    <article className="project-card">
+    <article className={`project-card project-card--${project.status.toLowerCase().replaceAll(' ', '-')}`}>
       <div className="project-card__header">
         <div>
           <p className="project-card__client">{project.clientName}</p>
@@ -53,14 +53,14 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
 
       <footer className="project-card__footer">
         <p className="project-card__dates">
-          <span className="sr-only">Project dates: </span>
-          {formatDate(project.startDate)} <span aria-hidden="true">→</span> {formatDate(project.dueDate)}
+          <span className="project-card__dates-label">Schedule</span>
+          <span>{formatDate(project.startDate)} <span aria-hidden="true">→</span> {formatDate(project.dueDate)}</span>
         </p>
         <div className="project-card__actions" aria-label={`Actions for ${project.projectName}`}>
-          <button type="button" className="button button--text" onClick={() => onEdit(project)}>
+          <button type="button" className="button button--text" onClick={() => onEdit(project)} aria-label={`Edit ${project.projectName}`}>
             Edit
           </button>
-          <button type="button" className="button button--text button--danger" onClick={() => onDelete(project)}>
+          <button type="button" className="button button--text button--danger" onClick={() => onDelete(project)} aria-label={`Delete ${project.projectName}`}>
             Delete
           </button>
         </div>

@@ -74,7 +74,7 @@ Status and priority colors communicate meaning. They must remain distinct from d
 | Priority | Foreground | Soft background | Meaning |
 | --- | --- | --- | --- |
 | Low | `#475569` | `#F1F5F9` | Low urgency |
-| Medium | `#B45309` | `#FEF3C7` | Needs attention |
+| Medium | `#C2410C` | `#FFEDD5` | Needs attention without duplicating the amber On Hold status |
 | High | `#B91C1C` | `#FEE2E2` | Urgent or higher delivery risk |
 
 ## Typography
@@ -99,7 +99,10 @@ Use clear hierarchy:
 - Keep card padding generous and use visible but subtle borders.
 - Make the project name the strongest element inside each card.
 - Group status and priority badges together.
-- Keep dates and actions in a consistent lower section of each card.
+- Keep creation metadata above a consistently labelled **Schedule** and clearly separated actions in each card footer.
+- Group search, filters, and sorting inside one quiet control panel so users understand they work together.
+- Use a subtle indigo-tinted control panel for browsing tools and a narrow semantic status accent on each project card; reserve stronger text color for the client, project name, and schedule hierarchy.
+- Treat status and priority as related metadata: both use the same soft-filled, subtly bordered pill component. Semantic color and the label distinguish the concepts; consistent widths and centered, compact semibold text keep card rows aligned predictably.
 - On narrow screens, stack card content and keep actions comfortably tappable.
 - Use one primary action per screen. For the projects page, this will be **New Project**.
 
@@ -109,10 +112,10 @@ The project list applies the CRAP principles of visual design:
 
 | Principle | Application |
 | --- | --- |
-| Contrast | Royal Blue and Indigo establish hierarchy; semantic badge colors make status and priority distinguishable; cards contrast with the pale workspace. |
-| Repetition | Cards, badges, buttons, spacing, borders, and metadata formatting repeat predictably across every project. |
-| Alignment | Headers, card content, footer details, and actions use consistent left/right alignment on larger screens and stack intentionally on small screens. |
-| Proximity | Client/project identity, status/priority, and dates/actions are grouped by their relationship so users can scan each record quickly. |
+| Contrast | Royal Blue and Indigo establish hierarchy; the browsing panel has a subtle indigo tint; semantic badge colors and a narrow status accent make project state scannable without turning every card into a colored surface. |
+| Repetition | Cards, badges, buttons, spacing, borders, labelled schedules, and metadata formatting repeat predictably across every project. |
+| Alignment | Headers, control fields, card content, footer details, and actions use consistent left/right alignment on larger screens and stack intentionally on small screens. |
+| Proximity | Search, filters, and sorting are one control group; client/project identity, status/priority, and schedule/actions are grouped by their relationship so users can scan each record quickly. |
 
 ## Required experience states
 
@@ -136,9 +139,9 @@ Do not expose raw browser, Django, or network exceptions to users.
 - Use concise, descriptive labels such as `Edit Corporate Website Redesign` where context is needed.
 - Ensure error messages are tied to their relevant fields.
 
-## Planned Phase 9 application
+## Applied interface pattern
 
-Phase 9 will apply this guide to the project-list screen:
+The project-list screen applies this guide:
 
 ```text
 Pale neutral page background
@@ -152,4 +155,4 @@ Semantic status and priority badges
 Readable dates and clearly placed actions
 ```
 
-Future phases should extend this guide rather than introduce unrelated colors or interaction patterns.
+Future revisions should extend this guide rather than introduce unrelated colors or interaction patterns.

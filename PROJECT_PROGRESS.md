@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 25 - Security Hardening and Secure Coding Review
+**Completed phase:** Phase 26 - Minor Revision and Experience Polish
 
-**Next phase:** Phase 26 - Minor Revision and Experience Polish
+**Next phase:** Phase 27 - Security Review
 
 ## Phase status
 
@@ -38,7 +38,7 @@ This tracker records implementation progress against the [development blueprint]
 | 23. Bonus: Frontend Tests | Complete | Vitest and React Testing Library cover project-card rendering/actions and project-service endpoint and validation-error behavior. |
 | 24. Bonus: Authentication | Complete | Django session authentication protects project routes; CSRF-aware sign-in/sign-out and session checks are integrated into the React UI and covered by backend/frontend tests. |
 | 25. Security Hardening and Secure Coding Review | Complete | CIA/OWASP-guided hardening adds secure production settings, origin restrictions, safe CSRF errors, login throttling, security logs without credentials, and regression coverage. |
-| 26. Minor Revision and Experience Polish | Not started | Evidence-based workflow, UI, color, and UX refinements are planned after functional and security work is stable. |
+| 26. Minor Revision and Experience Polish | Complete | Branded assets, a grouped search/filter/sort panel, clearer card schedules, accessible action labels, and refined spacing/controls improve CRAP consistency without changing workflows. |
 | 27-30. Submission Work | Not started | Security review, fresh-clone verification, technical reflection, and final submission review remain. |
 
 ## Verification record
