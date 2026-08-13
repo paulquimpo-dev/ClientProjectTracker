@@ -4,7 +4,7 @@ A full-stack client-project management application. It is designed to help an ag
 
 ## Current status
 
-Phases 1-14 are complete:
+Phases 1-17 are complete:
 
 - Django backend foundation and PostgreSQL configuration
 - Project data model and initial migration
@@ -19,8 +19,29 @@ Phases 1-14 are complete:
 - Project editing and confirmed deletion with persisted API updates
 - Friendly frontend validation, loading, and failure handling across CRUD flows
 - Required full-stack core application completion checkpoint
+- Core regression testing, reviewer documentation, and repository-quality review
 
-Core regression testing and frontend test coverage are planned for later phases. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+The required core is complete. Optional bonus work and frontend automated tests remain future improvements. See [Project Progress](PROJECT_PROGRESS.md) for the current milestone.
+
+## Features
+
+- View projects stored in PostgreSQL
+- Create, edit, and delete projects through the React interface
+- Validate names, allowed status/priority values, and delivery dates
+- Display loading, empty, success, and friendly error states
+- Load repeatable demonstration data with `python manage.py seed_projects`
+
+## Architecture
+
+```text
+React + TypeScript UI
+        |
+  Typed API service
+        |
+Django REST Framework
+        |
+ Django ORM + PostgreSQL
+```
 
 ## Technology stack
 
@@ -65,6 +86,33 @@ npm run dev
 
 The frontend runs at [http://127.0.0.1:5173/](http://127.0.0.1:5173/) by default. `VITE_API_BASE_URL` configures the Django API base URL for the service layer; it defaults to `http://127.0.0.1:8000/api` when unset. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in the backend `CORS_ALLOWED_ORIGINS` value so either local Vite address can reach the API. The list, create, edit, and confirmed-delete flows are available.
 
+## API and validation
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/projects/` | List projects |
+| `GET` | `/api/projects/{id}/` | Retrieve a project |
+| `POST` | `/api/projects/` | Create a project |
+| `PUT` | `/api/projects/{id}/` | Update a project |
+| `DELETE` | `/api/projects/{id}/` | Delete a project |
+
+The API uses camelCase fields. Client and project names are required; status and priority must use supported values; start and due dates are required; and a due date cannot be earlier than its start date. The backend is authoritative, while the frontend provides immediate field feedback.
+
+## Testing
+
+```powershell
+# Backend
+cd backend
+python manage.py test
+
+# Frontend
+cd ../frontend
+npm run lint
+npm run build
+```
+
+For manual API verification, see the [API Testing Guide](docs/API_TESTING_GUIDE.md).
+
 ## Documentation
 
 Extended project documentation is available in the [`docs/` directory](docs/README.md):
@@ -82,5 +130,5 @@ This project was developed with assistance from OpenAI Codex for planning, code 
 
 ## Known limitations
 
-- The required full-stack core is complete; frontend automated tests are planned for a later phase.
-- The backend test suite and seed data are implemented; frontend tests are planned for a later phase.
+- The required full-stack core is complete; frontend automated tests and optional bonus features remain future improvements.
+- Backend automated tests and repeatable seed data are implemented; frontend tests are planned for a later phase.

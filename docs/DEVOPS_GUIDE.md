@@ -1,6 +1,6 @@
 # DevOps Guide
 
-This guide explains how to configure a newly cloned project, run the backend, fetch repository updates, and resolve common local setup problems.
+This guide explains how to configure a newly cloned project, run the full stack, fetch repository updates, and resolve common local setup problems.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This guide explains how to configure a newly cloned project, run the backend, fe
 - PostgreSQL (version 18 is used in development; another supported version should work)
 - `psql`, pgAdmin, or another PostgreSQL administration client
 
-Node.js and npm are not required until the frontend is introduced.
+Node.js 22+ and npm are required to run the React frontend.
 
 ```text
 git --version
@@ -57,7 +57,7 @@ DB_PASSWORD=replace-with-your-postgres-superuser-password
 DB_HOST=127.0.0.1
 DB_PORT=5432
 
-CORS_ALLOWED_ORIGINS=http://localhost:5173
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ```
 
 The project currently uses the local PostgreSQL `postgres` superuser. Set `DB_PASSWORD` to that user's password. The `.env` file is ignored by Git and must never be committed. Django refuses to start when `DJANGO_SECRET_KEY` is missing.
@@ -130,6 +130,19 @@ python manage.py runserver
 
 The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the project API is available at [http://127.0.0.1:8000/api/projects/](http://127.0.0.1:8000/api/projects/). A `404` at the root `/` is expected because no root route is defined. Stop the server with `Ctrl+C`.
 
+### 7. Run the frontend
+
+Open a second terminal from the repository root:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
+npm install
+npm run dev
+```
+
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads `VITE_API_BASE_URL` from `frontend/.env`; it defaults to `http://127.0.0.1:8000/api` when unset.
+
 ## Load demonstration data
 
 From `backend/`, with the virtual environment active:
@@ -169,7 +182,7 @@ cd backend
 python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py check
-python manage.py runserver
+python manage.py test
 ```
 
 After each pull, review `.env.example` for new variables and add them to the local `.env` without overwriting existing secrets. The ignored `.env` and `.venv` remain unchanged by `git pull`.
@@ -183,7 +196,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Reinstall requirements after `requirements.txt` changes and apply migrations after new migration files are pulled.
+Reinstall requirements after `requirements.txt` changes and apply migrations after new migration files are pulled. In a second terminal, run `npm install` after `frontend/package.json` changes and use `npm run dev` to start the frontend.
 
 ## Troubleshooting
 
@@ -196,3 +209,4 @@ Reinstall requirements after `requirements.txt` changes and apply migrations aft
 | PowerShell blocks `Activate.ps1` | Use `.\.venv\Scripts\python.exe` directly for the Python commands. |
 | Port `8000` is in use | Run `python manage.py runserver 8001`. |
 | CORS request fails | Add the exact frontend origin to `CORS_ALLOWED_ORIGINS`. |
+| Port `5173` is in use | Run `npm run dev -- --port 5174`, then add that exact origin to `CORS_ALLOWED_ORIGINS`. |

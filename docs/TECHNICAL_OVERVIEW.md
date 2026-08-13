@@ -3,7 +3,7 @@
 ## Architecture
 
 ```text
-React + TypeScript frontend (planned)
+React + TypeScript frontend
              |
           REST/JSON
              |
@@ -14,7 +14,7 @@ Django REST Framework backend
         PostgreSQL
 ```
 
-The backend follows Django's conventional structure. Requests will flow through URL routing, Django REST Framework views, serializers, models, and PostgreSQL.
+The frontend calls a typed API service layer. Backend requests flow through URL routing, Django REST Framework views, serializers, models, and PostgreSQL.
 
 ## Repository structure
 
@@ -26,6 +26,7 @@ ClientProjectTracker/
 |   |   `-- management/commands/# Local seed command
 |   |-- manage.py
 |   `-- requirements.txt
+|-- frontend/                   # React UI, API service, components, pages, and types
 |-- docs/                       # Extended project documentation
 |-- .env.example                # Safe configuration template
 |-- KODA_FullStack_AI_IDE_Development_Blueprint.md
@@ -59,6 +60,17 @@ The backend is the authoritative validation layer. It currently enforces:
 - Start and due dates are required.
 - The due date cannot be earlier than the start date.
 
+## Frontend
+
+The React UI is organized by responsibility:
+
+- `pages/ProjectsPage.tsx` owns list/create/edit/delete screen state.
+- `components/` contains reusable project cards, badges, the ProjectForm, and delete confirmation.
+- `services/projectService.ts` centralizes typed HTTP requests and API error handling.
+- `types/project.ts` mirrors the camelCase API contract.
+
+The UI supports responsive project listing, create/edit forms, delete confirmation, client-side validation, backend field errors, and loading/empty/failure states.
+
 ## Demonstration data
 
 `python manage.py seed_projects` loads six fictional Philippine-based client projects. Client and project names identify each seed record. Repeated runs avoid duplicates and synchronize the approved seed values without deleting unrelated projects.
@@ -88,5 +100,6 @@ All AI-assisted output is reviewed by the developer before acceptance. Implement
 
 - [Documentation Index](README.md)
 - [DevOps Guide](DEVOPS_GUIDE.md)
+- [UI/UX Design Guide](UI_UX_DESIGN_GUIDE.md)
 - [Development Blueprint](../KODA_FullStack_AI_IDE_Development_Blueprint.md)
 - [Project Progress](../PROJECT_PROGRESS.md)

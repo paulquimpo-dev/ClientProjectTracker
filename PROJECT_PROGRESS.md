@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 14 - Core Assessment Complete
+**Completed phase:** Phase 17 - Core Git / Repository Review
 
-**Next phase:** Phase 15 - Core Regression Testing
+**Next phase:** Phase 18 - Bonus: Search
 
 ## Phase status
 
@@ -27,7 +27,9 @@ This tracker records implementation progress against the [development blueprint]
 | 12. Delete Project | Complete | Delete requires an explicit confirmation, persists through the API, removes the project from the visible list, and reports failures clearly. |
 | 13. Frontend Validation and Error Handling | Complete | Field validation, focus management, friendly save/delete/API errors, and failure-state regression checks are implemented. |
 | 14. Core Assessment Complete | Complete | The React/Django/PostgreSQL application delivers required end-to-end CRUD, validation, error states, and maintainable frontend/backend structure. |
-| 15-17. Frontend and Core Completion | Not started | Core regression testing, documentation, and repository review. |
+| 15. Core Regression Testing | Complete | Automated backend/API/build checks and user-confirmed browser regression passed for CRUD persistence, validation, API downtime, and recovery. |
+| 16. Core README | Complete | Root and supporting documentation now cover architecture, setup, frontend operation, API, validation, testing, security, and AI use. |
+| 17. Core Git / Repository Review | Complete | Repository hygiene, ignored local artifacts, unused starter assets, tracked-file safety, documentation links, and commit history were reviewed. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -150,9 +152,29 @@ This tracker records implementation progress against the [development blueprint]
 - Frontend linting and the TypeScript/Vite production build passed.
 - The live projects endpoint returned `200` with seeded project data.
 
+### Phase 15
+
+- Automated regression checks passed for backend tests, database/migration/dependency checks, seed repeatability, frontend linting, and the production build.
+- A live temporary-project cycle verified list, create, read persistence, update persistence, delete, post-delete `404`, invalid `400`, and missing-record `404` behavior.
+- The temporary project was removed and the original project count was restored.
+- Browser regression testing was manually confirmed for CRUD persistence, validation, backend-unavailable behavior, and recovery.
+
+### Phase 16
+
+- Root README now documents features, architecture, setup, API endpoints, validation, tests, limitations, and AI-assisted development.
+- Supporting DevOps and technical documentation was updated for the active React frontend, Vite environment configuration, CORS origins, and full-stack workflow.
+- The documentation index now includes the UI/UX design guide, and the default Vite README was replaced with project-specific frontend instructions.
+
+### Phase 17
+
+- Confirmed `.env`, virtual environments, `node_modules`, and build output are ignored and not tracked.
+- Credential-pattern scans found no hard-coded secrets; configuration reads `DJANGO_SECRET_KEY` and database credentials from environment variables.
+- Removed four unused Vite demonstration assets and replaced stale starter documentation.
+- Documentation links, working-tree changes, and commit history were reviewed; `git diff --check` passes.
+
 ## Current limitations
 
-- The required core application is complete. Phase 15 will perform a dedicated regression review before further documentation and repository-quality work.
+- The required core application, documentation, and repository review are complete. Optional bonus work begins with Phase 18.
 
 ## Update convention
 
