@@ -21,6 +21,10 @@ class ProjectAPITests(APITestCase):
         self.list_url = reverse("project-list")
         self.detail_url = reverse("project-detail", args=[self.project.pk])
 
+    def test_required_project_routes_are_primary_api_contract(self) -> None:
+        self.assertEqual(self.list_url, "/projects/")
+        self.assertEqual(self.detail_url, f"/projects/{self.project.pk}/")
+
     def valid_payload(self) -> dict:
         return {
             "clientName": "Globex Corporation",

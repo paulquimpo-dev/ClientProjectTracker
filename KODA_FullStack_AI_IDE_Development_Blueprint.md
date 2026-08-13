@@ -372,11 +372,11 @@ High
 Expose REST endpoints equivalent to:
 
 ```http
-GET    /api/projects/
-GET    /api/projects/{id}/
-POST   /api/projects/
-PUT    /api/projects/{id}/
-DELETE /api/projects/{id}/
+GET    /projects/
+GET    /projects/{id}/
+POST   /projects/
+PUT    /projects/{id}/
+DELETE /projects/{id}/
 ```
 
 Use conventional Django REST Framework routing.
@@ -884,11 +884,11 @@ Complete all required backend operations before frontend development.
 ## Required Endpoints
 
 ```text
-GET    /api/projects/
-GET    /api/projects/{id}/
-POST   /api/projects/
-PUT    /api/projects/{id}/
-DELETE /api/projects/{id}/
+GET    /projects/
+GET    /projects/{id}/
+POST   /projects/
+PUT    /projects/{id}/
+DELETE /projects/{id}/
 ```
 
 ## Tasks
@@ -905,28 +905,28 @@ DELETE /api/projects/{id}/
 ### List
 
 ```text
-GET /api/projects/
+GET /projects/
 Expected: 200
 ```
 
 ### Retrieve Existing
 
 ```text
-GET /api/projects/1/
+GET /projects/1/
 Expected: 200
 ```
 
 ### Retrieve Missing
 
 ```text
-GET /api/projects/999999/
+GET /projects/999999/
 Expected: 404
 ```
 
 ### Create Valid
 
 ```text
-POST /api/projects/
+POST /projects/
 Expected: 201
 ```
 
@@ -941,14 +941,14 @@ Expected:
 ### Update
 
 ```text
-PUT /api/projects/1/
+PUT /projects/1/
 Expected: 200
 ```
 
 ### Delete
 
 ```text
-DELETE /api/projects/1/
+DELETE /projects/1/
 Expected: 204
 ```
 
@@ -986,7 +986,7 @@ python manage.py seed_projects
 ```text
 [ ] Clean database can be migrated
 [ ] Seed command succeeds
-[ ] GET /api/projects/ returns seeded records
+[ ] GET /projects/ returns seeded records
 ```
 
 ## Suggested Git Commit

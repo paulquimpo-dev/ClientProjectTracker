@@ -45,7 +45,7 @@ cd backend
 python manage.py runserver
 ```
 
-The API runs at [http://127.0.0.1:8000/api/projects/](http://127.0.0.1:8000/api/projects/).
+The required API runs at [http://127.0.0.1:8000/projects/](http://127.0.0.1:8000/projects/).
 
 ### Terminal 2 — React frontend
 
@@ -56,7 +56,7 @@ npm run dev
 
 Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/) in a browser. Press `Ctrl+C` in either terminal to stop that development server.
 
-Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `http://127.0.0.1:8000/api`. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` so either local Vite address can reach the API.
+Set `VITE_API_BASE_URL` in `frontend/.env` to the Django API base URL, such as `http://127.0.0.1:8000`. Keep both `http://localhost:5173` and `http://127.0.0.1:5173` in `CORS_ALLOWED_ORIGINS` so either local Vite address can reach the API.
 
 ## Testing
 
@@ -82,17 +82,18 @@ For manual API verification, use the [API Testing Guide](docs/API_TESTING_GUIDE.
 - Display loading, empty, success, and friendly error states
 - Search loaded projects by client or project name
 - Filter loaded projects by status and priority
+- Sort loaded projects by date, name, or priority
 - Load repeatable demonstration data with `python manage.py seed_projects`
 
 ## API and validation
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `GET` | `/api/projects/` | List projects |
-| `GET` | `/api/projects/{id}/` | Retrieve a project |
-| `POST` | `/api/projects/` | Create a project |
-| `PUT` | `/api/projects/{id}/` | Update a project |
-| `DELETE` | `/api/projects/{id}/` | Delete a project |
+| `GET` | `/projects/` | List projects |
+| `GET` | `/projects/{id}/` | Retrieve a project |
+| `POST` | `/projects/` | Create a project |
+| `PUT` | `/projects/{id}/` | Update a project |
+| `DELETE` | `/projects/{id}/` | Delete a project |
 
 The API uses camelCase fields. Client and project names are required; status and priority must use supported values; start and due dates are required; and a due date cannot be earlier than its start date. The backend is authoritative, while the frontend provides immediate field feedback.
 
@@ -128,7 +129,7 @@ Django REST Framework
 
 ## Project status
 
-Phases 1–17 of the core blueprint are complete, along with the Phase 18 client-side search bonus: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
+Phases 1–17 of the core blueprint are complete, along with the Phase 18–21 client-side search, filtering, and sorting bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
 
 The required core is complete. Frontend automated tests and optional bonus features remain future improvements.
 
@@ -140,4 +141,4 @@ OpenAI Codex assisted with planning, scaffolding, documentation, debugging, and 
 
 - The required full-stack core is complete.
 - Backend automated tests and repeatable seed data are implemented.
-- Frontend automated tests and optional bonus features remain future improvements.
+- Frontend automated tests and larger optional enhancements remain future improvements.

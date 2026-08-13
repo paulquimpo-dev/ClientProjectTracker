@@ -37,7 +37,7 @@
 
 .project-controls {
   display: grid;
-  grid-template-columns: minmax(16rem, 1fr) repeat(2, minmax(10rem, 0.4fr));
+  grid-template-columns: minmax(16rem, 1fr) repeat(3, minmax(10rem, 0.4fr));
   gap: 1rem;
   margin: 0 0 2rem;
 }
@@ -89,6 +89,33 @@
   border-radius: 0.5rem;
   color: var(--text-primary);
   background: var(--surface);
+}
+
+.project-sort-control {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.project-sort-control select { flex: 1; }
+
+.sort-direction-button {
+  display: inline-grid;
+  flex: 0 0 2.75rem;
+  place-items: center;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--royal-blue);
+  background: var(--surface);
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sort-direction-button:focus-visible {
+  border-color: var(--indigo);
+  outline: 3px solid rgb(148 123 211 / 0.3);
 }
 
 .project-filter select:focus {

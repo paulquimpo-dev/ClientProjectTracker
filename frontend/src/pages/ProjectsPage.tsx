@@ -15,6 +15,22 @@ import {
 
 type LoadState = 'loading' | 'success' | 'error'
 
+type SortField =
+  | 'created-at'
+  | 'due-date'
+  | 'start-date'
+  | 'client-name'
+  | 'project-name'
+  | 'priority'
+
+type SortDirection = 'ascending' | 'descending'
+
+const priorityRank: Record<ProjectPriority, number> = {
+  High: 3,
+  Medium: 2,
+  Low: 1,
+}
+
 export function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loadState, setLoadState] = useState<LoadState>('loading')
@@ -27,11 +43,13 @@ export function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<ProjectStatus | 'all'>('all')
   const [priorityFilter, setPriorityFilter] = useState<ProjectPriority | 'all'>('all')
+  const [sortField, setSortField] = useState<SortField>('created-at')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('descending')
 
-  const filteredProjects = useMemo(() => {
+  const displayedProjects = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase()
 
-    return projects.filter((project) =>
+    const matchingProjects = projects.filter((project) =>
       (query === '' ||
         [project.clientName, project.projectName].some((value) =>
           value.toLocaleLowerCase().includes(query),
@@ -39,7 +57,28 @@ export function ProjectsPage() {
       (statusFilter === 'all' || project.status === statusFilter) &&
       (priorityFilter === 'all' || project.priority === priorityFilter),
     )
-  }, [priorityFilter, projects, searchQuery, statusFilter])
+
+    return [...matchingProjects].sort((first, second) => {
+      const comparison = (() => {
+        switch (sortField) {
+          case 'created-at':
+            return first.created_at.localeCompare(second.created_at)
+          case 'due-date':
+            return first.dueDate.localeCompare(second.dueDate)
+          case 'start-date':
+            return first.startDate.localeCompare(second.startDate)
+          case 'client-name':
+            return first.clientName.localeCompare(second.clientName)
+          case 'project-name':
+            return first.projectName.localeCompare(second.projectName)
+          case 'priority':
+            return priorityRank[first.priority] - priorityRank[second.priority]
+        }
+      })()
+
+      return sortDirection === 'ascending' ? comparison : -comparison
+    })
+  }, [priorityFilter, projects, searchQuery, sortDirection, sortField, statusFilter])
 
   const loadProjects = useCallback(async () => {
     setLoadState('loading')
@@ -112,7 +151,7 @@ export function ProjectsPage() {
         </button>
       </header>
 
-      <div className="project-controls" aria-label="Project search and filters">
+      <div className="project-controls" aria-label="Project search, filters, and sorting">
         <div className="project-search">
         <label htmlFor="project-search">Search projects</label>
         <div className="project-search__input-wrap">
@@ -149,6 +188,33 @@ export function ProjectsPage() {
             <option value="all">All priorities</option>
             {PROJECT_PRIORITIES.map((priority) => <option key={priority}>{priority}</option>)}
           </select>
+        </div>
+
+        <div className="project-filter project-filter--sort">
+          <label htmlFor="project-sort">Sort by</label>
+          <div className="project-sort-control">
+            <select
+              id="project-sort"
+              value={sortField}
+              onChange={(event) => setSortField(event.target.value as SortField)}
+            >
+              <option value="created-at">Date created</option>
+              <option value="due-date">Due date</option>
+              <option value="start-date">Start date</option>
+              <option value="client-name">Client name</option>
+              <option value="project-name">Project name</option>
+              <option value="priority">Priority</option>
+            </select>
+            <button
+              type="button"
+              className="sort-direction-button"
+              onClick={() => setSortDirection((direction) => direction === 'ascending' ? 'descending' : 'ascending')}
+              aria-label={`Sort ${sortDirection === 'ascending' ? 'descending' : 'ascending'}`}
+              title={`Sort ${sortDirection === 'ascending' ? 'descending' : 'ascending'}`}
+            >
+              <span aria-hidden="true">{sortDirection === 'ascending' ? '↑' : '↓'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -213,7 +279,7 @@ export function ProjectsPage() {
         </section>
       ) : null}
 
-      {loadState === 'success' && projects.length > 0 && filteredProjects.length === 0 ? (
+      {loadState === 'success' && projects.length > 0 && displayedProjects.length === 0 ? (
         <section className="state-message">
           <h2>No matching projects found.</h2>
           <p>Try changing your search or filters.</p>
@@ -222,7 +288,7 @@ export function ProjectsPage() {
 
       {loadState === 'success' && projects.length > 0 ? (
         <ProjectList
-          projects={filteredProjects}
+          projects={displayedProjects}
           onEdit={(project) => { setEditingProject(project); setIsCreating(false); setSuccessMessage(null); setActionError(null) }}
           onDelete={(project) => { setDeletingProject(project); setSuccessMessage(null); setActionError(null) }}
         />

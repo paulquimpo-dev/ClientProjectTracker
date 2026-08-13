@@ -40,11 +40,11 @@ Phase 4 implements the required CRUD API.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `GET` | `/api/projects/` | List projects |
-| `GET` | `/api/projects/{id}/` | Retrieve one project |
-| `POST` | `/api/projects/` | Create a project |
-| `PUT` | `/api/projects/{id}/` | Update a project |
-| `DELETE` | `/api/projects/{id}/` | Delete a project |
+| `GET` | `/projects/` | List projects |
+| `GET` | `/projects/{id}/` | Retrieve one project |
+| `POST` | `/projects/` | Create a project |
+| `PUT` | `/projects/{id}/` | Update a project |
+| `DELETE` | `/projects/{id}/` | Delete a project |
 
 The external API uses camelCase fields such as `clientName`, `projectName`, `startDate`, and `dueDate`. The serializer maps these fields to Django's internal snake_case model fields.
 

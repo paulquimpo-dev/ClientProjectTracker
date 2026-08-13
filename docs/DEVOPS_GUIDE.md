@@ -128,7 +128,7 @@ python manage.py test
 python manage.py runserver
 ```
 
-The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the project API is available at [http://127.0.0.1:8000/api/projects/](http://127.0.0.1:8000/api/projects/). A `404` at the root `/` is expected because no root route is defined. Stop the server with `Ctrl+C`.
+The backend runs at [http://127.0.0.1:8000/](http://127.0.0.1:8000/), and the required project API is available at [http://127.0.0.1:8000/projects/](http://127.0.0.1:8000/projects/). A `404` at the root `/` is expected because no root route is defined. Stop the server with `Ctrl+C`.
 
 ### 7. Run the frontend
 
@@ -141,7 +141,7 @@ npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000/api` for local development.
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000` for local development.
 
 ## Load demonstration data
 
@@ -156,7 +156,7 @@ The command loads six fictional Philippine-based client projects. It can be reru
 After starting Django, verify the records through the API:
 
 ```powershell
-curl.exe http://127.0.0.1:8000/api/projects/
+curl.exe http://127.0.0.1:8000/projects/
 ```
 
 

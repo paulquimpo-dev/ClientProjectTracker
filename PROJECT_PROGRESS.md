@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 20 - Bonus: Priority Filter
+**Completed phase:** Phase 21 - Bonus: Sorting
 
-**Next phase:** Phase 21 - Bonus: Sorting
+**Next phase:** Phase 22 - Automated Backend Tests
 
 ## Phase status
 
@@ -33,7 +33,8 @@ This tracker records implementation progress against the [development blueprint]
 | 18. Bonus: Search | Complete | Client-side, case-insensitive search filters loaded projects by client name and project name without changing backend behavior. |
 | 19. Bonus: Status Filter | Complete | Client-side status filtering works alongside search and preserves the existing CRUD flows. |
 | 20. Bonus: Priority Filter | Complete | Client-side priority filtering combines with search and status filtering using clear all-values defaults. |
-| 21-31. Bonus and Submission Work | Not started | Sorting, tests, and submission polish remain. |
+| 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; an accessible direction button switches ascending and descending order without changing stored data. |
+| 22-31. Bonus and Submission Work | Not started | Tests and submission polish remain. |
 
 ## Verification record
 
@@ -194,7 +195,7 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current limitations
 
-- The required core application, documentation, and repository review are complete. Search and status/priority filters are implemented; the remaining bonus work begins with Phase 21.
+- The required core application, documentation, and repository review are complete. Search, status/priority filters, and client-side sorting are implemented; the remaining bonus work begins with Phase 22.
 
 ## Update convention
 
