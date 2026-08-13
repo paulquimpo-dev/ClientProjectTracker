@@ -35,6 +35,78 @@
   color: var(--text-secondary);
 }
 
+.project-form-panel {
+  margin: 0 0 2rem;
+  padding: 1.5rem;
+  border: 1px solid #ddd6fe;
+  border-radius: 0.875rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(94 74 227 / 0.08);
+}
+
+.project-form-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.project-form-panel__header h2 {
+  margin: 0.35rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.project-form-panel__header p:not(.eyebrow) {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.project-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.project-form__full-width { grid-column: 1 / -1; }
+
+.form-field { display: grid; gap: 0.5rem; text-align: left; }
+
+.form-field label { color: var(--text-primary); font-size: 0.9375rem; font-weight: 750; }
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.6875rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  background: #fff;
+}
+
+.form-field textarea { resize: vertical; }
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--indigo);
+  outline: 3px solid rgb(148 123 211 / 0.3);
+}
+
+.form-field input[aria-invalid="true"],
+.form-field select[aria-invalid="true"],
+.form-field textarea[aria-invalid="true"] { border-color: var(--danger-foreground); }
+
+.field-error, .form-error { margin: 0; color: var(--danger-foreground); font-size: 0.875rem; font-weight: 650; }
+
+.form-error { margin: 0 0 1rem; padding: 0.75rem; border-radius: 0.5rem; background: #fef2f2; }
+
+.project-form__actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
+
+.success-message { margin: 0 0 1.5rem; padding: 0.75rem 1rem; border: 1px solid #bbf7d0; border-radius: 0.5rem; color: #166534; background: #f0fdf4; font-weight: 700; }
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -211,4 +283,8 @@
   .button--primary { width: 100%; }
   .badge-group, .project-card__actions { justify-content: flex-start; }
   .project-card { padding: 1.25rem; }
+  .project-form { grid-template-columns: 1fr; }
+  .project-form__full-width { grid-column: auto; }
+  .project-form-panel__header { flex-direction: column; }
+  .project-form__actions .button { flex: 1; }
 }

@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 9 - Project Listing
+**Completed phase:** Phase 10 - Create Project
 
-**Next phase:** Phase 10 - Create Project
+**Next phase:** Phase 11 - Edit Project
 
 ## Phase status
 
@@ -22,7 +22,8 @@ This tracker records implementation progress against the [development blueprint]
 | 7. React + TypeScript Foundation | Complete | Vite React TypeScript app, frontend source structure, Project types, configurable API base URL, and application shell are in place. |
 | 8. API Service Layer | Complete | Typed Project API client functions, friendly API errors, runtime connection status, and configurable API base URL are implemented. |
 | 9. Project Listing | Complete | Responsive project cards, reusable status/priority badges, and loading, empty, and API-error states are implemented using the Phase 8 API service. |
-| 10-17. Frontend and Core Completion | Not started | Create/edit/delete interface, regression testing, documentation, and repository review. |
+| 10. Create Project | Complete | A reusable ProjectForm creates validated projects through the API, preserves failed input, surfaces field errors, and updates the visible list on success. |
+| 11-17. Frontend and Core Completion | Not started | Edit/delete interface, regression testing, documentation, and repository review. |
 | 18-31. Bonus and Submission Work | Not started | Begin only after the core application is stable. |
 
 ## Verification record
@@ -105,9 +106,19 @@ This tracker records implementation progress against the [development blueprint]
 - The implementation applies the documented CRAP principles for contrast, repetition, alignment, and proximity.
 - Frontend linting and production build passed.
 
+### Phase 10
+
+- Made the New Project action functional with an accessible, responsive ProjectForm.
+- Added frontend checks for required names/dates and invalid date ordering.
+- The form preserves entered values after validation failures and displays field-specific frontend or backend errors.
+- Valid submissions use the shared `createProject` API service, then add the persisted project to the visible list and display a success message.
+- A valid end-to-end creation was persisted and retrieved through Django/PostgreSQL; the temporary verification record was removed.
+- An invalid date range was rejected by the backend with `400`.
+- Frontend linting and production build passed.
+
 ## Current limitations
 
-- Project creation, editing, and deletion are not implemented yet.
+- Project editing and deletion are not implemented yet.
 
 ## Update convention
 
