@@ -87,11 +87,8 @@ Only after the complete core application is stable:
 - Search
 - Filtering
 - Sorting
+- Authentication
 - Automated tests
-- Swagger / OpenAPI
-- Docker
-- GitHub Actions / CI
-- Deployment
 
 ---
 
@@ -1574,100 +1571,36 @@ Do not spend excessive time configuring frontend testing.
 
 ---
 
-# PHASE 24 — Bonus: Swagger / OpenAPI
-
-Optional enhancement.
-
-Potential implementation:
-
-```text
-drf-spectacular
-```
-
-Possible endpoints:
-
-```text
-/api/schema/
-/api/docs/
-```
-
-Document only what actually exists.
-
----
-
-# PHASE 25 — Bonus: Docker
+# PHASE 24 — Bonus: Authentication
 
 ## Goal
 
-Provide reproducible local setup.
+Add simple, secure access control so project data is available only to authenticated users.
 
-Potential services:
+## Tasks
+
+1. Choose and document the authentication approach before implementation.
+2. Add sign-in and sign-out flows.
+3. Protect the project API so unauthenticated requests receive a meaningful `401 Unauthorized` response.
+4. Protect the project-management UI and provide a clear sign-in state.
+5. Keep all existing CRUD, validation, search, filters, and sorting behavior working for signed-in users.
+
+## Exit Criteria
 
 ```text
-frontend
-backend
-postgres
+[ ] Unauthenticated users cannot access project data
+[ ] Signed-in users can use the existing project-management features
+[ ] Sign-out ends access cleanly
+[ ] Authentication failures are understandable
 ```
 
-Ideal usage:
+## Scope note
 
-```bash
-docker compose up --build
-```
-
-Critical rule:
-
-> A broken Docker setup is worse than no Docker setup.
-
-Only keep Docker support if it works from a clean environment.
+Authentication is optional. Do not add Docker, deployment, Swagger/OpenAPI, or CI as part of this assessment roadmap.
 
 ---
 
-# PHASE 26 — Bonus: CI
-
-Add GitHub Actions after tests are reliable.
-
-Suggested pipeline:
-
-```text
-Push / Pull Request
-       ↓
-Install backend dependencies
-       ↓
-Run backend tests
-       ↓
-Install frontend dependencies
-       ↓
-TypeScript check
-       ↓
-Lint
-       ↓
-Build frontend
-```
-
-Do not add CI merely for appearance.
-
-It must pass.
-
----
-
-# PHASE 27 — Bonus: Deployment
-
-Deployment is optional and lowest priority.
-
-Possible architecture:
-
-```text
-Frontend → Vercel
-Backend → Render / Railway / VPS / other platform
-Database → Managed PostgreSQL
-```
-
-Do not allow deployment issues to destabilize the repository.
-
----
-
-# PHASE 28 — Security Review
+# PHASE 25 — Security Review
 
 Before submission, inspect the repository as a secure software engineer.
 
@@ -1688,7 +1621,7 @@ Check:
 
 ---
 
-# PHASE 29 — Fresh Clone Test
+# PHASE 26 — Fresh Clone Test
 
 ## Goal
 
@@ -1734,7 +1667,7 @@ If any undocumented step is required, update the README.
 
 ---
 
-# PHASE 30 — Technical Reflection Preparation
+# PHASE 27 — Technical Reflection Preparation
 
 Prepare truthful answers based on the actual implementation.
 
@@ -1770,7 +1703,7 @@ Do not fabricate complexity that was not actually implemented.
 
 ---
 
-# PHASE 31 — Final Submission Review
+# PHASE 28 — Final Submission Review
 
 ## Core
 
@@ -1823,10 +1756,7 @@ Do not fabricate complexity that was not actually implemented.
 [ ] Sorting
 [ ] Backend tests
 [ ] Frontend tests
-[ ] Swagger / OpenAPI
-[ ] Docker
-[ ] CI
-[ ] Deployment
+[ ] Authentication
 ```
 
 Only mark items actually completed.
@@ -1876,6 +1806,8 @@ Status filtering
 Priority filtering
 Sorting
 Automated backend tests
+Automated frontend tests
+Authentication
 ```
 
 These are the preferred bonus targets.
@@ -1884,13 +1816,7 @@ These are the preferred bonus targets.
 
 ## P3 — Polish
 
-```text
-Frontend tests
-Swagger
-Docker
-CI
-Deployment
-```
+No additional bonus work is planned. Docker and deployment are intentionally out of scope for this assessment.
 
 Only implement after P0, P1, and desired P2 work are stable.
 
@@ -1933,7 +1859,7 @@ Core application plus useful user-facing bonus features and backend tests.
 Complete selected items from:
 
 ```text
-Phases 23–29
+Phases 23–24
 ```
 
 Only when they are stable.
@@ -2254,10 +2180,7 @@ Priority order:
 4. Sorting
 5. Backend automated tests
 6. Frontend tests
-7. Swagger / OpenAPI
-8. Docker
-9. CI
-10. Deployment
+7. Authentication
 
 Do not skip ahead to lower-priority bonus work while a higher-priority bonus is incomplete or unstable.
 

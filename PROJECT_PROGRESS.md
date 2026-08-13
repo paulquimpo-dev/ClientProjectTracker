@@ -4,9 +4,9 @@ This tracker records implementation progress against the [development blueprint]
 
 ## Current milestone
 
-**Completed phase:** Phase 21 - Bonus: Sorting
+**Completed phase:** Phase 23 - Bonus: Frontend Tests
 
-**Next phase:** Phase 22 - Automated Backend Tests
+**Next phase:** Phase 24 - Bonus: Authentication
 
 ## Phase status
 
@@ -34,7 +34,9 @@ This tracker records implementation progress against the [development blueprint]
 | 19. Bonus: Status Filter | Complete | Client-side status filtering works alongside search and preserves the existing CRUD flows. |
 | 20. Bonus: Priority Filter | Complete | Client-side priority filtering combines with search and status filtering using clear all-values defaults. |
 | 21. Bonus: Sorting | Complete | Projects can be ordered by date, client name, project name, or priority; a subtle creation timestamp and accessible direction button make the sort order clear without changing stored data. |
-| 22-31. Bonus and Submission Work | Not started | Tests and submission polish remain. |
+| 22. Bonus: Backend Automated Tests | Complete | Django API tests cover required CRUD, primary route contract, required names, valid status/priority choices, date ordering, and missing resources. |
+| 23. Bonus: Frontend Tests | Complete | Vitest and React Testing Library cover project-card rendering/actions and project-service endpoint and validation-error behavior. |
+| 24-28. Bonus and Submission Work | Not started | Authentication and final submission polish remain. |
 
 ## Verification record
 
@@ -193,9 +195,16 @@ This tracker records implementation progress against the [development blueprint]
 - The controls use responsive layout and retain existing create, edit, and delete behavior.
 - Frontend linting and production build passed.
 
+### Phases 22–23
+
+- Expanded the isolated Django API test suite to 18 tests, covering missing project names and invalid status/priority choices alongside existing CRUD and date validation coverage.
+- Added Vitest and React Testing Library with a standard `npm run test` command.
+- Added frontend tests for project-card rendering/actions and the environment-configured `/projects/` service request and validation errors.
+- Backend tests, frontend tests, linting, and production build passed.
+
 ## Current limitations
 
-- The required core application, documentation, and repository review are complete. Search, status/priority filters, and client-side sorting are implemented; the remaining bonus work begins with Phase 22.
+- The required core application, documentation, and repository review are complete. Search, filters, sorting, and automated backend/frontend tests are implemented; the remaining planned bonus work is Phase 24 authentication.
 
 ## Update convention
 

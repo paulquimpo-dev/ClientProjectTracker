@@ -74,6 +74,36 @@ class ProjectAPITests(APITestCase):
         self.assertIn("clientName", response.data)
         self.assertEqual(Project.objects.count(), 1)
 
+    def test_create_without_project_name_returns_field_error(self) -> None:
+        payload = self.valid_payload()
+        payload.pop("projectName")
+
+        response = self.client.post(self.list_url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("projectName", response.data)
+        self.assertEqual(Project.objects.count(), 1)
+
+    def test_create_with_invalid_status_returns_field_error(self) -> None:
+        payload = self.valid_payload()
+        payload["status"] = "Cancelled"
+
+        response = self.client.post(self.list_url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("status", response.data)
+        self.assertEqual(Project.objects.count(), 1)
+
+    def test_create_with_invalid_priority_returns_field_error(self) -> None:
+        payload = self.valid_payload()
+        payload["priority"] = "Urgent"
+
+        response = self.client.post(self.list_url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("priority", response.data)
+        self.assertEqual(Project.objects.count(), 1)
+
     def test_create_with_invalid_date_range_returns_due_date_error(self) -> None:
         payload = self.valid_payload()
         payload["dueDate"] = "2026-08-01"

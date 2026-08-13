@@ -143,6 +143,14 @@ npm run dev
 
 Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep Django running in the first terminal. The frontend reads the required `VITE_API_BASE_URL` from `frontend/.env`; set it to `http://127.0.0.1:8000` for local development.
 
+Verify the frontend after installation or changes:
+
+```powershell
+npm run test
+npm run lint
+npm run build
+```
+
 ## Load demonstration data
 
 From `backend/`, with the virtual environment active:
@@ -196,7 +204,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Reinstall requirements after `requirements.txt` changes and apply migrations after new migration files are pulled. In a second terminal, run `npm install` after `frontend/package.json` changes and use `npm run dev` to start the frontend.
+Reinstall requirements after `requirements.txt` changes and apply migrations after new migration files are pulled. In a second terminal, run `npm install` after `frontend/package.json` changes, then use `npm run test`, `npm run lint`, and `npm run build` to verify the frontend before starting it with `npm run dev`.
 
 ## Troubleshooting
 

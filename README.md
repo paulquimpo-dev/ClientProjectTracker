@@ -68,6 +68,7 @@ python manage.py test
 
 # Frontend
 cd ../frontend
+npm run test
 npm run lint
 npm run build
 ```
@@ -129,9 +130,9 @@ Django REST Framework
 
 ## Project status
 
-Phases 1–17 of the core blueprint are complete, along with the Phase 18–21 client-side search, filtering, and sorting bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
+Phases 1–17 of the core blueprint are complete, along with the Phase 18–23 search, filtering, sorting, and automated-testing bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
 
-The required core is complete. Frontend automated tests and optional bonus features remain future improvements.
+The required core is complete. Authentication is the only remaining planned optional bonus feature.
 
 ## AI-assisted development
 
@@ -140,5 +141,5 @@ OpenAI Codex assisted with planning, scaffolding, documentation, debugging, and 
 ## Known limitations
 
 - The required full-stack core is complete.
-- Backend automated tests and repeatable seed data are implemented.
-- Frontend automated tests and larger optional enhancements remain future improvements.
+- Backend and frontend automated tests and repeatable seed data are implemented.
+- Authentication remains an optional future enhancement.

@@ -50,6 +50,10 @@ The external API uses camelCase fields such as `clientName`, `projectName`, `sta
 
 The API returns `200` for successful reads and updates, `201` for creation, `204` for deletion, `400` for invalid input, and `404` for missing projects. See the [API Testing Guide](API_TESTING_GUIDE.md) for repeatable manual checks.
 
+## Automated testing
+
+The Django test suite covers required CRUD behavior, validation rules, missing-resource responses, and the `/projects/` route contract. The frontend uses Vitest and React Testing Library to cover project-card rendering/actions and the environment-configured API service, including validation-error handling. Run `python manage.py test` from `backend/` and `npm run test` from `frontend/`.
+
 ## Validation rules
 
 The backend is the authoritative validation layer. It currently enforces:

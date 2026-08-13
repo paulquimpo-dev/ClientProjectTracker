@@ -7,6 +7,7 @@ The Client Project Tracker frontend is a React, TypeScript, and Vite application
 ```powershell
 npm install
 npm run dev
+npm run test
 npm run lint
 npm run build
 ```
