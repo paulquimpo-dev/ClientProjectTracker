@@ -18,11 +18,11 @@ class SeedProjectsCommandTests(TestCase):
         output = self.run_seed()
 
         self.assertEqual(Project.objects.count(), len(SEED_PROJECTS))
-        self.assertIn("6 created, 0 updated", output)
+        self.assertIn("12 created, 0 updated", output)
         self.assertTrue(
             Project.objects.filter(
-                client_name="Bayanihan Retail Group",
-                project_name="E-Commerce Storefront Redesign",
+                client_name="Acme Corporation",
+                project_name="Corporate Website Redesign",
             ).exists()
         )
 
@@ -36,7 +36,7 @@ class SeedProjectsCommandTests(TestCase):
 
     def test_seed_synchronizes_changed_seed_record(self) -> None:
         self.run_seed()
-        project = Project.objects.get(client_name="Kapihan Collective")
+        project = Project.objects.get(client_name="GreenLeaf Cafe")
         project.status = Project.Status.COMPLETED
         project.save()
 

@@ -29,8 +29,6 @@ ClientProjectTracker/
 |-- frontend/                   # React UI, API service, components, pages, and types
 |-- docs/                       # Extended project documentation
 |-- .env.example                # Safe configuration template
-|-- KODA_FullStack_AI_IDE_Development_Blueprint.md
-|-- PROJECT_PROGRESS.md
 `-- README.md
 ```
 
@@ -85,7 +83,7 @@ The UI supports responsive project listing, create/edit forms, delete confirmati
 
 ## Demonstration data
 
-`python manage.py seed_projects` loads six fictional Philippine-based client projects. Client and project names identify each seed record. Repeated runs avoid duplicates and synchronize the approved seed values without deleting unrelated projects.
+`python manage.py seed_projects` loads twelve fictional client projects. Client and project names identify each seed record. Repeated runs avoid duplicates and synchronize the approved seed values without deleting unrelated projects.
 
 ## Configuration and security
 
@@ -110,8 +108,6 @@ All AI-assisted output is reviewed by the developer before acceptance. Implement
 
 ## Related documents
 
-- [Documentation Index](README.md)
 - [DevOps Guide](DEVOPS_GUIDE.md)
+- [Technical Reflection](TECHNICAL_REFLECTION.md)
 - [UI/UX Design Guide](UI_UX_DESIGN_GUIDE.md)
-- [Development Blueprint](../KODA_FullStack_AI_IDE_Development_Blueprint.md)
-- [Project Progress](../PROJECT_PROGRESS.md)

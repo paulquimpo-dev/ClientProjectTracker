@@ -191,7 +191,7 @@ From `backend/`, with the virtual environment active:
 python manage.py seed_projects
 ```
 
-The command loads six fictional Philippine-based client projects. It can be rerun safely: missing seed records are created, changed seed values are synchronized, duplicates are avoided, and unrelated user projects are preserved.
+The command loads twelve fictional client projects. It can be rerun safely: missing seed records are created, changed seed values are synchronized, duplicates are avoided, and unrelated user projects are preserved.
 
 After starting Django, verify the records through the API:
 

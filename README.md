@@ -140,9 +140,8 @@ The API uses camelCase fields. Client and project names are required; status and
 - [DevOps Guide](docs/DEVOPS_GUIDE.md) — clone, configure, run, update, and troubleshoot the project
 - [API Testing Guide](docs/API_TESTING_GUIDE.md) — manually verify CRUD behavior with curl or Postman
 - [Technical Overview](docs/TECHNICAL_OVERVIEW.md) — architecture, structure, validation, and security
+- [Technical Reflection](docs/TECHNICAL_REFLECTION.md) — implementation rationale, tradeoffs, security, testing, and AI use
 - [UI/UX Design Guide](docs/UI_UX_DESIGN_GUIDE.md) — visual direction, accessibility, and UI principles
-- [Development Blueprint](KODA_FullStack_AI_IDE_Development_Blueprint.md) — complete phase-by-phase plan
-- [Project Progress](PROJECT_PROGRESS.md) — completed phases and verification records
 
 ## Architecture
 
@@ -167,9 +166,9 @@ Django REST Framework
 
 ## Project status
 
-Phases 1–17 of the core blueprint are complete, along with the Phase 18–24 search, filtering, sorting, automated-testing, and session-authentication bonuses: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, regression testing, documentation, and repository review.
+The required core and planned optional features are complete: backend CRUD, PostgreSQL persistence, React CRUD UI, validation, failure handling, authentication, search/filter/sort tools, automated tests, security hardening, and documentation.
 
-The required core and planned optional features are complete. Security hardening and minor experience revisions remain planned review phases.
+A fresh-clone verification remains recommended before external submission.
 
 ## AI-assisted development
 

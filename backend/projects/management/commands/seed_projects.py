@@ -7,76 +7,112 @@ from projects.models import Project
 
 SEED_PROJECTS = (
     {
-        "client_name": "Bayanihan Retail Group",
-        "project_name": "E-Commerce Storefront Redesign",
-        "description": (
-            "Redesign the online storefront and improve the mobile shopping "
-            "experience."
-        ),
+        "client_name": "Acme Corporation",
+        "project_name": "Corporate Website Redesign",
+        "description": "Redesign and modernize the company's corporate website.",
         "status": Project.Status.IN_PROGRESS,
         "priority": Project.Priority.HIGH,
         "start_date": date(2026, 6, 1),
-        "due_date": date(2026, 9, 15),
+        "due_date": date(2026, 7, 15),
     },
     {
-        "client_name": "Kapihan Collective",
-        "project_name": "Online Ordering and Pickup System",
-        "description": (
-            "Build an online ordering system for advance pickup across multiple "
-            "cafe branches."
-        ),
+        "client_name": "GreenLeaf Cafe",
+        "project_name": "Online Ordering System",
+        "description": "Develop an online ordering platform for customers.",
         "status": Project.Status.PLANNING,
-        "priority": Project.Priority.HIGH,
-        "start_date": date(2026, 8, 15),
-        "due_date": date(2026, 11, 30),
-    },
-    {
-        "client_name": "Isla Verde Travel Services",
-        "project_name": "Tour Booking Portal",
-        "description": (
-            "Create a booking portal for local tours, packages, and customer "
-            "reservations."
-        ),
-        "status": Project.Status.IN_PROGRESS,
         "priority": Project.Priority.MEDIUM,
-        "start_date": date(2026, 5, 10),
-        "due_date": date(2026, 10, 20),
+        "start_date": date(2026, 6, 10),
+        "due_date": date(2026, 8, 1),
     },
     {
-        "client_name": "North Luzon Fitness Hub",
-        "project_name": "Membership Management App",
-        "description": (
-            "Develop a membership application for subscriptions, class "
-            "schedules, and bookings."
-        ),
+        "client_name": "Bright Realty",
+        "project_name": "Property Listing Portal",
+        "description": "Build a portal for managing property listings.",
         "status": Project.Status.ON_HOLD,
         "priority": Project.Priority.MEDIUM,
-        "start_date": date(2026, 7, 1),
-        "due_date": date(2026, 12, 15),
+        "start_date": date(2026, 5, 15),
+        "due_date": date(2026, 7, 30),
     },
     {
-        "client_name": "Sinag Learning Center",
-        "project_name": "Student Enrollment Portal",
-        "description": (
-            "Replace the manual enrollment process with an online student "
-            "registration portal."
-        ),
-        "status": Project.Status.COMPLETED,
+        "client_name": "Nova Fitness",
+        "project_name": "Mobile App MVP",
+        "description": "Develop the first version of the fitness tracking app.",
+        "status": Project.Status.IN_PROGRESS,
         "priority": Project.Priority.HIGH,
-        "start_date": date(2026, 1, 15),
-        "due_date": date(2026, 4, 30),
+        "start_date": date(2026, 6, 5),
+        "due_date": date(2026, 8, 20),
     },
     {
-        "client_name": "Habi Creative Studio",
-        "project_name": "Brand Portfolio Website",
-        "description": (
-            "Build a portfolio website showcasing branding, illustration, and "
-            "design projects."
-        ),
+        "client_name": "Blue Ocean Travel",
+        "project_name": "Booking Platform Enhancement",
+        "description": "Improve search and booking functionalities.",
+        "status": Project.Status.COMPLETED,
+        "priority": Project.Priority.MEDIUM,
+        "start_date": date(2026, 4, 1),
+        "due_date": date(2026, 5, 30),
+    },
+    {
+        "client_name": "TechVision Solutions",
+        "project_name": "CRM Dashboard",
+        "description": "Develop an internal CRM dashboard.",
+        "status": Project.Status.PLANNING,
+        "priority": Project.Priority.HIGH,
+        "start_date": date(2026, 6, 15),
+        "due_date": date(2026, 8, 15),
+    },
+    {
+        "client_name": "Urban Living",
+        "project_name": "Property Management System",
+        "description": "Create a platform for managing rental properties.",
+        "status": Project.Status.IN_PROGRESS,
+        "priority": Project.Priority.MEDIUM,
+        "start_date": date(2026, 5, 20),
+        "due_date": date(2026, 8, 10),
+    },
+    {
+        "client_name": "Elite Events",
+        "project_name": "Event Registration Portal",
+        "description": "Develop a registration and ticketing portal.",
         "status": Project.Status.PLANNING,
         "priority": Project.Priority.LOW,
-        "start_date": date(2026, 9, 1),
-        "due_date": date(2026, 10, 31),
+        "start_date": date(2026, 6, 20),
+        "due_date": date(2026, 9, 1),
+    },
+    {
+        "client_name": "HealthFirst Clinic",
+        "project_name": "Patient Appointment System",
+        "description": "Build an appointment scheduling application.",
+        "status": Project.Status.COMPLETED,
+        "priority": Project.Priority.HIGH,
+        "start_date": date(2026, 3, 1),
+        "due_date": date(2026, 5, 1),
+    },
+    {
+        "client_name": "MarketPro",
+        "project_name": "Marketing Campaign Dashboard",
+        "description": "Track and manage digital marketing campaigns.",
+        "status": Project.Status.IN_PROGRESS,
+        "priority": Project.Priority.MEDIUM,
+        "start_date": date(2026, 6, 1),
+        "due_date": date(2026, 7, 31),
+    },
+    {
+        "client_name": "Sunrise Education",
+        "project_name": "Learning Management Portal",
+        "description": "Develop a portal for students and instructors.",
+        "status": Project.Status.PLANNING,
+        "priority": Project.Priority.HIGH,
+        "start_date": date(2026, 7, 1),
+        "due_date": date(2026, 9, 30),
+    },
+    {
+        "client_name": "FreshFarm",
+        "project_name": "Inventory Management System",
+        "description": "Track inventory across multiple locations.",
+        "status": Project.Status.ON_HOLD,
+        "priority": Project.Priority.LOW,
+        "start_date": date(2026, 5, 1),
+        "due_date": date(2026, 8, 1),
     },
 )
 
