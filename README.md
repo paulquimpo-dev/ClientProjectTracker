@@ -67,6 +67,7 @@ Extended project documentation is available in the [`docs/` directory](docs/READ
 - [DevOps Guide](docs/DEVOPS_GUIDE.md) - clone, configure, run, update, and troubleshoot the project
 - [API Testing Guide](docs/API_TESTING_GUIDE.md) - manually verify CRUD behavior with curl or Postman
 - [Technical Overview](docs/TECHNICAL_OVERVIEW.md) - architecture, repository structure, validation, security, and API plans
+- [UI/UX Design Guide](docs/UI_UX_DESIGN_GUIDE.md) - visual direction, color roles, semantic statuses, accessibility, and layout principles
 - [Development Blueprint](KODA_FullStack_AI_IDE_Development_Blueprint.md) - complete phase-by-phase implementation plan
 - [Project Progress](PROJECT_PROGRESS.md) - verified phase status and next milestone
 
