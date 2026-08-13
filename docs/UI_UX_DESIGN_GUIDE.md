@@ -107,6 +107,7 @@ Use clear hierarchy:
 - Treat status and priority as related metadata: both use the same soft-filled, subtly bordered pill component. Semantic color and the label distinguish the concepts; consistent widths and centered, compact semibold text keep card rows aligned predictably.
 - On narrow screens, stack card content and keep actions comfortably tappable.
 - Use one primary action per screen. For the projects page, this will be **New Project**.
+- Open create, edit, and delete workflows in modal dialogs so a user can act on a project without losing their position in the list. Lock the page behind the dialog, support Escape and backdrop dismissal when no request is in progress, trap keyboard focus, and return focus to the initiating control when it closes.
 
 ## CRAP principles in the interface
 

@@ -1,6 +1,7 @@
 import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ConfirmDialog } from '../components/ConfirmDialog'
+import { Modal } from '../components/Modal'
 import { ProjectForm } from '../components/ProjectForm'
 import { ProjectList } from '../components/ProjectList'
 import { ApiError, createProject, deleteProject, getProjects, updateProject } from '../services/projectService'
@@ -390,45 +391,6 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
         </div>
       </div>
 
-      {isCreating ? (
-        <ProjectForm
-          mode="create"
-          submitLabel="Create Project"
-          submittingLabel="Creating project…"
-          onCancel={() => setIsCreating(false)}
-          onSubmit={handleCreateProject}
-        />
-      ) : null}
-
-      {editingProject ? (
-        <ProjectForm
-          key={editingProject.id}
-          mode="edit"
-          initialValues={{
-            clientName: editingProject.clientName,
-            projectName: editingProject.projectName,
-            description: editingProject.description,
-            status: editingProject.status,
-            priority: editingProject.priority,
-            startDate: editingProject.startDate,
-            dueDate: editingProject.dueDate,
-          }}
-          submitLabel="Update Project"
-          submittingLabel="Updating project…"
-          onCancel={() => setEditingProject(null)}
-          onSubmit={handleUpdateProject}
-        />
-      ) : null}
-
-      {deletingProject ? (
-        <ConfirmDialog
-          projectName={deletingProject.projectName}
-          isDeleting={isDeleting}
-          onCancel={() => { setDeletingProject(null); setActionError(null) }}
-          onConfirm={() => void handleDeleteProject()}
-        />
-      ) : null}
-
       {successMessage ? <p className="success-message" role="status">{successMessage}</p> : null}
       {actionError ? <p className="form-error" role="alert">{actionError}</p> : null}
 
@@ -442,6 +404,55 @@ export function ProjectsPage({ user, onSignOut }: ProjectsPageProps) {
             Try again
           </button>
         </section>
+      ) : null}
+
+      {isCreating ? (
+        <Modal labelledBy="project-form-title" onClose={() => setIsCreating(false)}>
+          <ProjectForm
+            mode="create"
+            submitLabel="Create project"
+            submittingLabel="Creating project…"
+            onCancel={() => setIsCreating(false)}
+            onSubmit={handleCreateProject}
+          />
+        </Modal>
+      ) : null}
+
+      {editingProject ? (
+        <Modal labelledBy="project-form-title" onClose={() => setEditingProject(null)}>
+          <ProjectForm
+            key={editingProject.id}
+            mode="edit"
+            initialValues={{
+              clientName: editingProject.clientName,
+              projectName: editingProject.projectName,
+              description: editingProject.description,
+              status: editingProject.status,
+              priority: editingProject.priority,
+              startDate: editingProject.startDate,
+              dueDate: editingProject.dueDate,
+            }}
+            submitLabel="Save changes"
+            submittingLabel="Saving changes…"
+            onCancel={() => setEditingProject(null)}
+            onSubmit={handleUpdateProject}
+          />
+        </Modal>
+      ) : null}
+
+      {deletingProject ? (
+        <Modal
+          labelledBy="delete-project-title"
+          isDismissible={!isDeleting}
+          onClose={() => { setDeletingProject(null); setActionError(null) }}
+        >
+          <ConfirmDialog
+            projectName={deletingProject.projectName}
+            isDeleting={isDeleting}
+            onCancel={() => { setDeletingProject(null); setActionError(null) }}
+            onConfirm={() => void handleDeleteProject()}
+          />
+        </Modal>
       ) : null}
 
       {loadState === 'success' && projects.length === 0 ? (

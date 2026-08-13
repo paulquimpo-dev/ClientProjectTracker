@@ -105,12 +105,22 @@ export function ProjectForm({
     <section className="project-form-panel" aria-labelledby="project-form-title">
       <div className="project-form-panel__header">
         <div>
-          <p className="eyebrow">{mode === 'create' ? 'New project' : 'Edit project'}</p>
-          <h2 id="project-form-title">{mode === 'create' ? 'Create a project' : 'Update project'}</h2>
+          <h2 id="project-form-title">
+            {mode === 'create' ? 'New project' : `Edit: ${initialValues.projectName}`}
+          </h2>
           <p>Fields marked with an asterisk are required.</p>
         </div>
-        <button type="button" className="button button--text" onClick={onCancel} disabled={isSubmitting}>
-          Cancel
+        <button
+          type="button"
+          className="button button--icon"
+          onClick={onCancel}
+          disabled={isSubmitting}
+          aria-label="Close project form"
+          title="Close"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
         </button>
       </div>
 
@@ -126,6 +136,7 @@ export function ProjectForm({
             aria-invalid={Boolean(fieldErrors.clientName)}
             aria-describedby={fieldErrors.clientName ? 'clientName-error' : undefined}
             autoComplete="organization"
+            data-autofocus
           />
         </FormField>
 
@@ -148,7 +159,7 @@ export function ProjectForm({
             onChange={(event) => updateField('description', event.target.value)}
             aria-invalid={Boolean(fieldErrors.description)}
             aria-describedby={fieldErrors.description ? 'description-error' : undefined}
-            rows={4}
+            rows={3}
           />
         </FormField>
 
